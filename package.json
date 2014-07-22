@@ -1,0 +1,31 @@
+{
+  "name": "precinct",
+  "version": "0.0.0",
+  "description": "Unleash the detectives",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mrjoelkemp/node-precinct.git"
+  },
+  "keywords": [
+    "modules",
+    "amd",
+    "commonjs",
+    "detective",
+    "dependencies"
+  ],
+  "author": "Joel Kemp <joel@mrjoelkemp.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mrjoelkemp/node-precinct/issues"
+  },
+  "homepage": "https://github.com/mrjoelkemp/node-precinct",
+  "dependencies": {
+    "detective": "^3.1.0",
+    "detective-amd": "^2.1.4",
+    "module-definition": "^1.2.4"
+  }
+}
