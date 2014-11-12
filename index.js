@@ -9,9 +9,8 @@ var getModuleType = require('module-definition'),
  * @param  {String} file - path of the file whose dependencies to find
  * @return {String[]}
  */
-module.exports = function(file) {
-  var content = fs.readFileSync(file).toString(),
-      type = getModuleType.sync(file),
+module.exports = function(content) {
+  var type = getModuleType.fromSource(content),
       theDetective,
       dependencies = [];
 

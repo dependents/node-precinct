@@ -4,7 +4,7 @@
 
 `npm install precinct`
 
-Uses the appropriate detective to find the dependencies of the file. 
+Uses the appropriate detective to find the dependencies of a file.
 Supports: AMD, CommonJS, and ES6 modules.
 
 ### Usage
@@ -12,7 +12,8 @@ Supports: AMD, CommonJS, and ES6 modules.
 ```js
 var precinct = require('precinct');
 
-var deps = precinct('myFile.js'); // array containing dependencies
+// Pass in the file's content
+var deps = precinct(fs.readFileSync('myFile.js', 'utf8')); // array containing dependencies
 ```
 
 ### License
