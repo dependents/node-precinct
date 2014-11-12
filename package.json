@@ -4,7 +4,7 @@
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
-    "test": "node test/index.js"
+    "test": "mocha test/index.js"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,12 @@
   },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
-    "detective": "^3.1.0",
-    "detective-amd": "^2.1.4",
-    "module-definition": "^1.2.4"
+    "detective": "~3.1.0",
+    "detective-amd": "~2.2.1",
+    "detective-es6": "~1.0.1",
+    "module-definition": "~2.1.0"
+  },
+  "devDependencies": {
+    "mocha": "~2.0.1"
   }
 }

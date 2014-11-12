@@ -1,6 +1,7 @@
 var getModuleType = require('module-definition'),
     detective = require('detective'),
     detectiveAmd = require('detective-amd'),
+    detectiveEs6 = require('detective-es6'),
     fs = require('fs');
 
 /**
@@ -21,6 +22,8 @@ module.exports = function(file) {
     case 'amd':
       theDetective = detectiveAmd;
       break;
+    case 'es6':
+      theDetective = detectiveEs6;
   }
 
   if (theDetective) {
