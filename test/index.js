@@ -23,6 +23,13 @@ describe('node-precinct', function() {
     assert(cjs.length === 1);
   });
 
+  it('grabs dependencies of sass files', function() {
+    var sass = precinct(fs.readFileSync(__dirname + '/styles.scss', 'utf8'), 'sass');
+    assert(sass[0] === '_foo');
+    assert(sass[1] === 'baz.scss');
+    assert(sass.length === 2);
+  });
+
   it('yields no dependencies for es6 modules with no imports', function () {
     var cjs = precinct(fs.readFileSync(__dirname + '/es6NoImport.js', 'utf8'));
     assert(!cjs.length);
