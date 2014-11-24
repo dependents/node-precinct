@@ -4,7 +4,7 @@
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/index.js"
+    "test": "jscs -p google index.js test/index.js && mocha test/index.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "module-definition": "~2.1.0"
   },
   "devDependencies": {
+    "jscs": "~1.7.3",
     "mocha": "~2.0.1"
   }
 }
