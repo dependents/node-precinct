@@ -1,6 +1,6 @@
 {
   "name": "precinct",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
