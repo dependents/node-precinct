@@ -40,4 +40,17 @@ describe('node-precinct', function() {
     var none = precinct(fs.readFileSync(__dirname + '/none.js', 'utf8'));
     assert(!none.length);
   });
+
+  describe('paperwork', function() {
+    it('returns the dependencies for the given filepath', function() {
+      assert(precinct.paperwork(__dirname + '/es6.js').length);
+      assert(precinct.paperwork(__dirname + '/styles.scss').length);
+    });
+
+    it('throws if the file cannot be found', function() {
+      assert.throws(function() {
+        precinct.paperwork('foo');
+      });
+    });
+  });
 });
