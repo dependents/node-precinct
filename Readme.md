@@ -22,11 +22,19 @@ var deps = precinct(content);
 
 Finding SASS dependencies:
 
-```
+```js
 var content = fs.readFileSync('styles.scss', 'utf8');
 
 var deps = precinct(content, 'sass');
 
+```
+
+If you just want to pass in a filepath and get the dependencies:
+
+```js
+var paperwork = require('precinct').paperwork;
+
+var deps = paperwork('myFile.js');
 ```
 
 ### License
