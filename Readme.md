@@ -37,6 +37,12 @@ var paperwork = require('precinct').paperwork;
 var deps = paperwork('myFile.js');
 ```
 
+#### Options
+
+###### `precinct.paperwork(filename, options)`
+
+* `includeCore`: (default: true) set to `false` to exclude core Node dependencies from the list of dependencies.
+
 ### License
 
 MIT
