@@ -1,10 +1,14 @@
 var getModuleType = require('module-definition');
+
 var detective = require('detective');
 var detectiveAmd = require('detective-amd');
 var detectiveEs6 = require('detective-es6');
 var detectiveSass = require('detective-sass');
+
 var fs = require('fs');
 var path = require('path');
+
+var natives = process.binding('natives');
 
 /**
  * Finds the list of dependencies for the given file
@@ -42,10 +46,16 @@ module.exports = function(content, type) {
 
 /**
  * Returns the dependencies for the given file path
- * @param  {String} filename
+ * @param {String} filename
+ * @param {Object} [options]
+ * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
  * @return {String[]}
  */
-module.exports.paperwork = function(filename) {
+module.exports.paperwork = function(filename, options) {
+  options = options || {
+    includeCore: true
+  };
+
   var content = fs.readFileSync(filename, 'utf8');
   var type;
 
@@ -53,7 +63,15 @@ module.exports.paperwork = function(filename) {
     type = 'sass';
   }
 
-  return this(content, type);
+  var deps = this(content, type);
+
+  if (!options.includeCore) {
+    return deps.filter(function(d) {
+      return !isCore(d);
+    });
+  }
+
+  return deps;
 }
 
 /**
@@ -63,4 +81,13 @@ module.exports.paperwork = function(filename) {
 function isSassFile(filename) {
   return path.extname(filename) === '.scss' ||
          path.extname(filename) === '.sass';
+}
+
+/**
+ * Whether or not the module is a Node core module
+ * @param  {String}  modulePath
+ * @return {Boolean}
+ */
+function isCore(modulePath) {
+  return !!natives[modulePath];
 }

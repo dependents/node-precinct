@@ -52,5 +52,18 @@ describe('node-precinct', function() {
         precinct.paperwork('foo');
       });
     });
+
+    it('filters out core modules if options.includeCore is false', function() {
+      var deps = precinct.paperwork(__dirname + '/coreModules.js', {
+        includeCore: false
+      });
+
+      assert(!deps.length);
+    });
+
+    it('does not filter out core modules by default', function() {
+      var deps = precinct.paperwork(__dirname + '/coreModules.js');
+      assert(deps.length);
+    });
   });
 });
