@@ -27,7 +27,7 @@
     "detective": "~3.1.0",
     "detective-amd": "~2.2.1",
     "detective-es6": "~1.0.1",
-    "detective-sass": "~1.0.0",
+    "detective-sass": "~1.0.1",
     "module-definition": "~2.1.0"
   },
   "devDependencies": {
