@@ -4,11 +4,13 @@
 
 `npm install precinct`
 
-Uses the appropriate detective to find the dependencies of a file.
+Uses the appropriate detective to find the dependencies of a file or its AST.
 
 Supports: AMD, CommonJS, and ES6 modules.
 
 Also supports SASS dependencies via [detective-sass](https://github.com/mrjoelkemp/node-detective-sass).
+
+* Does not support a SASS AST
 
 ### Usage
 
@@ -17,6 +19,7 @@ var precinct = require('precinct');
 
 var content = fs.readFileSync('myFile.js', 'utf8');
 
+// Pass in a file's content or an AST
 var deps = precinct(content);
 ```
 

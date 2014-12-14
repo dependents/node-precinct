@@ -1,6 +1,8 @@
 var getModuleType = require('module-definition');
 
-var detective = require('detective');
+var acorn = require('acorn');
+
+var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
 var detectiveEs6 = require('detective-es6');
 var detectiveSass = require('detective-sass');
@@ -12,19 +14,32 @@ var natives = process.binding('natives');
 
 /**
  * Finds the list of dependencies for the given file
- * @param {String} content - path of the file whose dependencies to find
+ * @param {String|Object} content - File's content or AST
  * @param {String} [type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
 module.exports = function(content, type) {
   var dependencies = [];
   var theDetective;
+  var ast;
 
-  type = type || getModuleType.fromSource(content);
+  // We assume we're dealing with a JS file
+  if (!type && typeof content !== 'object') {
+    // Parse once and distribute the AST to all detectives
+    ast = acorn.parse(content, {
+      ecmaVersion: 6
+    });
+
+  // SASS files shouldn't be parsed by Acorn
+  } else {
+    ast = content;
+  }
+
+  type = type || getModuleType.fromSource(ast);
 
   switch (type) {
     case 'commonjs':
-      theDetective = detective;
+      theDetective = detectiveCjs;
       break;
     case 'amd':
       theDetective = detectiveAmd;
@@ -38,7 +53,7 @@ module.exports = function(content, type) {
   }
 
   if (theDetective) {
-    dependencies = theDetective(content);
+    dependencies = theDetective(ast);
   }
 
   return dependencies;
