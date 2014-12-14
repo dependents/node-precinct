@@ -3,8 +3,40 @@ var assert = require('assert');
 var fs = require('fs');
 
 describe('node-precinct', function() {
+  it('accepts an AST', function() {
+    var ast = {
+      type: 'Program',
+      body: [{
+        type: 'VariableDeclaration',
+        declarations: [{
+          type: 'VariableDeclarator',
+          id: {
+            type: 'Identifier',
+            name: 'a'
+          },
+          init: {
+            type: 'CallExpression',
+            callee: {
+              type: 'Identifier',
+              name: 'require'
+            },
+            arguments: [{
+              type: 'Literal',
+              value: './a',
+              raw: './a'
+            }]
+          }
+        }],
+        kind: 'var'
+      }]
+    };
+
+    var deps = precinct(ast);
+    assert(deps.length === 1);
+  });
+
   it('grabs dependencies of amd modules', function() {
-    var amd  = precinct(fs.readFileSync(__dirname + '/amd.js', 'utf8'));
+    var amd = precinct(fs.readFileSync(__dirname + '/amd.js', 'utf8'));
     assert(amd.indexOf('./a') !== -1);
     assert(amd.indexOf('./b') !== -1);
     assert(amd.length === 2);
