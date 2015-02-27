@@ -1,6 +1,7 @@
 var getModuleType = require('module-definition');
 
-var acorn = require('acorn');
+var acorn = require('acorn/acorn');
+var acornLoose = require('acorn/acorn_loose');
 
 var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
@@ -26,10 +27,7 @@ module.exports = function(content, type) {
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     // Parse once and distribute the AST to all detectives
-    ast = acorn.parse(content, {
-      ecmaVersion: 6
-    });
-
+    ast = getAst(content);
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
@@ -105,4 +103,34 @@ function isSassFile(filename) {
  */
 function isCore(modulePath) {
   return !!natives[modulePath];
+}
+
+/**
+ *
+ * @param  {String}  content
+ * @return {Object}  ast
+ */
+function getAst(content) {
+  // jscs:disable
+  //
+  // First try to parse with strict mode
+  // We try both because:
+  // https://github.com/marijnh/acorn/commit/3981dfa133bd9ff7eb83bc0a2decbaea42cbf5bd
+  //
+  // jscs: enable
+  var ast;
+
+  // Returns an object if ok, if not, returns an empty array
+  try {
+    ast = acorn.parse(content, {
+      ecmaVersion: 6
+    });
+  } catch (err) {
+      // jscs:disable
+      ast = acornLoose.parse_dammit(content, {
+        ecmaVersion: 6
+      });
+      // jscs:enable
+  }
+  return ast;
 }

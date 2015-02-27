@@ -55,6 +55,13 @@ describe('node-precinct', function() {
     assert(cjs.length === 1);
   });
 
+  it('grabs dependencies of es6 modules even with small errors', function() {
+    var filePath = __dirname + '/es6WithError.js';
+    var cjs  = precinct(fs.readFileSync(filePath, 'utf8'));
+    assert(cjs.indexOf('lib') !== -1);
+    assert(cjs.length === 1);
+  });
+
   it('grabs dependencies of sass files', function() {
     var content = fs.readFileSync(__dirname + '/styles.scss', 'utf8');
     var sass = precinct(content, 'sass');
@@ -71,6 +78,15 @@ describe('node-precinct', function() {
   it('yields no dependencies for non-modules', function() {
     var none = precinct(fs.readFileSync(__dirname + '/none.js', 'utf8'));
     assert(!none.length);
+  });
+
+  it('ignores unparsable .js files', function() {
+    var cjs;
+    assert.doesNotThrow(function() {
+      cjs = precinct(fs.readFileSync(__dirname + '/unparseable.js', 'utf8'));
+    }, SyntaxError);
+    assert(cjs.indexOf('lib') < 0);
+    assert(cjs.length === 0);
   });
 
   describe('paperwork', function() {
