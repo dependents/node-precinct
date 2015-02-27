@@ -89,6 +89,12 @@ describe('node-precinct', function() {
     assert(cjs.length === 0);
   });
 
+  it('does not blow up when parsing a gruntfile #2', function() {
+    assert.doesNotThrow(function() {
+      precinct(fs.readFileSync(__dirname + '/Gruntfile.js', 'utf8'));
+    });
+  });
+
   describe('paperwork', function() {
     it('returns the dependencies for the given filepath', function() {
       assert(precinct.paperwork(__dirname + '/es6.js').length);
