@@ -1,7 +1,6 @@
 var getModuleType = require('module-definition');
 
-var acorn = require('acorn/acorn');
-var acornLoose = require('acorn/acorn_loose');
+var justParse = require('just-parse');
 
 var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
@@ -27,7 +26,7 @@ module.exports = function(content, type) {
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     // Parse once and distribute the AST to all detectives
-    ast = getAst(content);
+    ast = justParse(content);
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
@@ -80,7 +79,7 @@ module.exports.paperwork = function(filename, options) {
 
   if (!options.includeCore) {
     return deps.filter(function(d) {
-      return !isCore(d);
+      return !natives[d];
     });
   }
 
@@ -94,42 +93,4 @@ module.exports.paperwork = function(filename, options) {
 function isSassFile(filename) {
   return path.extname(filename) === '.scss' ||
          path.extname(filename) === '.sass';
-}
-
-/**
- * Whether or not the module is a Node core module
- * @param  {String}  modulePath
- * @return {Boolean}
- */
-function isCore(modulePath) {
-  return !!natives[modulePath];
-}
-
-/**
- * @param  {String}  content
- * @return {Object}  ast
- */
-function getAst(content) {
-  // jscs: disable
-  //
-  // First try to parse with strict mode
-  // We try both because:
-  // https://github.com/marijnh/acorn/commit/3981dfa133bd9ff7eb83bc0a2decbaea42cbf5bd
-  //
-  // jscs: enable
-  var ast;
-
-  var parserOptions = {
-    ecmaVersion: 6
-  };
-
-  // Returns an object if ok, if not, returns an empty array
-  try {
-    ast = acorn.parse(content, parserOptions);
-  } catch (err) {
-    // jscs: disable
-    ast = acornLoose.parse_dammit(content, parserOptions);
-    // jscs: enable
-  }
-  return ast;
 }
