@@ -30,6 +30,7 @@
     "detective-cjs": "~1.0.1",
     "detective-es6": "~1.1.0",
     "detective-sass": "~1.0.1",
+    "detective-stylus": "~1.0.0",
     "just-parse": "~1.0.0",
     "module-definition": "~2.2.0"
   },

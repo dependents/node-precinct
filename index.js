@@ -6,6 +6,7 @@ var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
 var detectiveEs6 = require('detective-es6');
 var detectiveSass = require('detective-sass');
+var detectiveStylus = require('detective-stylus');
 
 var fs = require('fs');
 var path = require('path');
@@ -47,6 +48,9 @@ module.exports = function(content, type) {
     case 'sass':
       theDetective = detectiveSass;
       break;
+    case 'stylus':
+      theDetective = detectiveStylus;
+      break;
   }
 
   if (theDetective) {
@@ -73,6 +77,10 @@ module.exports.paperwork = function(filename, options) {
 
   if (isSassFile(filename)) {
     type = 'sass';
+  } else if (isStylusFile(filename)) {
+    type = 'stylus';
+  } else if (isLessFile(filename)) {
+    type = 'less';
   }
 
   var deps = this(content, type);
@@ -93,4 +101,20 @@ module.exports.paperwork = function(filename, options) {
 function isSassFile(filename) {
   return path.extname(filename) === '.scss' ||
          path.extname(filename) === '.sass';
+}
+
+/**
+ * @param  {String}  filename
+ * @return {Boolean}
+ */
+function isStylusFile(filename) {
+  return path.extname(filename) === '.styl';
+}
+
+/**
+ * @param  {String}  filename
+ * @return {Boolean}
+ */
+function isLessFile(filename) {
+  return path.extname(filename) === '.less';
 }
