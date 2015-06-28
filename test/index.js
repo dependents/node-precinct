@@ -65,19 +65,24 @@ describe('node-precinct', function() {
   it('grabs dependencies of sass files', function() {
     var content = fs.readFileSync(__dirname + '/styles.scss', 'utf8');
     var sass = precinct(content, 'sass');
-    assert(sass[0] === '_foo');
-    assert(sass[1] === 'baz.scss');
-    assert(sass.length === 2);
+    assert.deepEqual(sass, ['_foo', 'baz.scss']);
+  });
+
+  it('grabs dependencies of stylus files', function() {
+    var content = fs.readFileSync(__dirname + '/styles.styl', 'utf8');
+    var result = precinct(content, 'stylus');
+    var expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
+    assert.deepEqual(result, expected);
   });
 
   it('yields no dependencies for es6 modules with no imports', function() {
     var cjs = precinct(fs.readFileSync(__dirname + '/es6NoImport.js', 'utf8'));
-    assert(!cjs.length);
+    assert.equal(cjs.length, 0);
   });
 
   it('yields no dependencies for non-modules', function() {
     var none = precinct(fs.readFileSync(__dirname + '/none.js', 'utf8'));
-    assert(!none.length);
+    assert.equal(none.length, 0);
   });
 
   it('ignores unparsable .js files', function() {
