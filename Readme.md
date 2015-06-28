@@ -6,11 +6,11 @@
 
 Uses the appropriate detective to find the dependencies of a file or its AST.
 
-Supports: AMD, CommonJS, and ES6 modules.
+Supports:
 
-Also supports SASS dependencies via [detective-sass](https://github.com/mrjoelkemp/node-detective-sass).
-
-* Does not support a SASS AST
+* JavaScript modules: AMD, CommonJS, and ES6.
+* Sass dependencies via [detective-sass](https://github.com/mrjoelkemp/node-detective-sass).
+* Stylus
 
 ### Usage
 
@@ -23,24 +23,23 @@ var content = fs.readFileSync('myFile.js', 'utf8');
 var deps = precinct(content);
 ```
 
-Finding SASS dependencies:
+Finding non-JavaScript (ex: Sass and Stylus) dependencies:
 
 ```js
 var content = fs.readFileSync('styles.scss', 'utf8');
 
 var deps = precinct(content, 'sass');
-
+var deps2 = precinct(content, 'stylus');
 ```
 
-If you just want to pass in a filepath and get the dependencies:
+Or, if you just want to pass in a filepath and get the dependencies:
 
 ```js
 var paperwork = require('precinct').paperwork;
 
 var deps = paperwork('myFile.js');
+var deps2 = paperwork('styles.scss');
 ```
-
-#### Options
 
 ###### `precinct.paperwork(filename, options)`
 
