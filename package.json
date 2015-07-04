@@ -26,16 +26,16 @@
   },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
-    "detective-amd": "~2.3.0",
-    "detective-cjs": "~1.0.1",
-    "detective-es6": "~1.1.0",
-    "detective-sass": "~1.0.1",
-    "detective-stylus": "~1.0.0",
-    "just-parse": "~1.0.0",
-    "module-definition": "~2.2.0"
+    "detective-amd": "^2.3.2",
+    "detective-cjs": "^1.0.1",
+    "detective-es6": "^1.1.0",
+    "detective-sass": "^1.0.1",
+    "detective-stylus": "^1.0.0",
+    "just-parse": "^1.0.0",
+    "module-definition": "^2.2.0"
   },
   "devDependencies": {
-    "jscs": "~1.7.3",
+    "jscs": "~1.13.1",
     "mocha": "~2.0.1"
   }
 }
