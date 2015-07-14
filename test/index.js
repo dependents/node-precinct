@@ -100,6 +100,10 @@ describe('node-precinct', function() {
     });
   });
 
+  it('throws for files with ios includes', function() {
+    precinct(fs.readFileSync(__dirname + '/iosIncludes.js', 'utf8'));
+  });
+
   describe('paperwork', function() {
     it('returns the dependencies for the given filepath', function() {
       assert(precinct.paperwork(__dirname + '/es6.js').length);
