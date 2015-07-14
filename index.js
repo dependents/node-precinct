@@ -12,6 +12,7 @@ var fs = require('fs');
 var path = require('path');
 
 var natives = process.binding('natives');
+var debug = require('debug')('precinct');
 
 /**
  * Finds the list of dependencies for the given file
@@ -26,8 +27,13 @@ module.exports = function(content, type) {
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
+    debug('parsing content');
+
     // Parse once and distribute the AST to all detectives
     ast = justParse(content);
+
+    debug('parsed result is an ' + (typeof ast));
+
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
