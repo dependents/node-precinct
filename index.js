@@ -1,6 +1,6 @@
 var getModuleType = require('module-definition');
 
-var justParse = require('just-parse');
+var Walker = require('node-source-walk');
 
 var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
@@ -26,8 +26,9 @@ module.exports = function(content, type) {
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
+    var walker = new Walker();
     // Parse once and distribute the AST to all detectives
-    ast = justParse(content);
+    ast = walker.parse(content, walker.options);
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
