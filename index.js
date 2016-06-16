@@ -1,5 +1,5 @@
 var getModuleType = require('module-definition');
-
+var debug = require('debug')('precinct');
 var Walker = require('node-source-walk');
 
 var detectiveCjs = require('detective-cjs');
@@ -15,6 +15,7 @@ var natives = process.binding('natives');
 
 /**
  * Finds the list of dependencies for the given file
+ *
  * @param {String|Object} content - File's content or AST
  * @param {String} [type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
@@ -27,8 +28,13 @@ module.exports = function(content, type) {
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     var walker = new Walker();
-    // Parse once and distribute the AST to all detectives
-    ast = walker.parse(content, walker.options);
+    try {
+      // Parse once and distribute the AST to all detectives
+      ast = walker.parse(content, walker.options);
+    } catch (e) {
+      debug('could not parse content');
+      return dependencies;
+    }
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
@@ -63,6 +69,7 @@ module.exports = function(content, type) {
 
 /**
  * Returns the dependencies for the given file path
+ *
  * @param {String} filename
  * @param {Object} [options]
  * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
@@ -93,7 +100,7 @@ module.exports.paperwork = function(filename, options) {
   }
 
   return deps;
-}
+};
 
 /**
  * @param  {String}  filename

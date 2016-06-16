@@ -67,11 +67,10 @@ describe('node-precinct', function() {
     assert(cjs.length === 1);
   });
 
-  it('grabs dependencies of es6 modules even with small errors', function() {
+  it('does not grabs dependencies of es6 modules with syntax errors', function() {
     var filePath = __dirname + '/es6WithError.js';
     var cjs  = precinct(fs.readFileSync(filePath, 'utf8'));
-    assert(cjs.indexOf('lib') !== -1);
-    assert(cjs.length === 1);
+    assert(cjs.length === 0);
   });
 
   it('grabs dependencies of sass files', function() {
