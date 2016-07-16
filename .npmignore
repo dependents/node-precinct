@@ -2,3 +2,4 @@ test
 .gitignore
 .jscsrc
 .travis.yml
+Readme.md
