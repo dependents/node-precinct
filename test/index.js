@@ -1,113 +1,120 @@
-var precinct = require('../');
 var assert = require('assert');
 var fs = require('fs');
+var path = require('path');
+var rewire = require('rewire');
+
+var ast = require('./exampleAST');
+var precinct = rewire('../');
+
+function read(filename) {
+  return fs.readFileSync(path.join(__dirname, filename), 'utf8');
+}
 
 describe('node-precinct', function() {
   it('accepts an AST', function() {
-    var ast = {
-      type: 'Program',
-      body: [{
-        type: 'VariableDeclaration',
-        declarations: [{
-          type: 'VariableDeclarator',
-          id: {
-            type: 'Identifier',
-            name: 'a'
-          },
-          init: {
-            type: 'CallExpression',
-            callee: {
-              type: 'Identifier',
-              name: 'require'
-            },
-            arguments: [{
-              type: 'Literal',
-              value: './a',
-              raw: './a'
-            }]
-          }
-        }],
-        kind: 'var'
-      }]
-    };
-
     var deps = precinct(ast);
     assert(deps.length === 1);
   });
 
+  it('dangles off a given ast', function() {
+    var deps = precinct(ast);
+    assert.deepEqual(precinct.ast, ast);
+  });
+
+  it('dangles off the parsed ast from a .js file', function() {
+    precinct(read('amd.js'));
+    assert.ok(precinct.ast);
+    assert.notDeepEqual(precinct.ast, ast);
+  });
+
+  it('dangles off the parsed ast from a non-js file\'s detective that dangles its parsed ast', function() {
+    var sassAST = {};
+
+    var revert = precinct.__set__('detectiveSass', function detective() {
+      detective.ast = sassAST;
+      return [];
+    });
+
+    precinct(read('styles.scss'), 'sass');
+    assert.deepEqual(precinct.ast, sassAST);
+    revert();
+  });
+
   it('grabs dependencies of amd modules', function() {
-    var amd = precinct(fs.readFileSync(__dirname + '/amd.js', 'utf8'));
+    var amd = precinct(read('amd.js'));
     assert(amd.indexOf('./a') !== -1);
     assert(amd.indexOf('./b') !== -1);
     assert(amd.length === 2);
   });
 
   it('grabs dependencies of commonjs modules', function() {
-    var cjs  = precinct(fs.readFileSync(__dirname + '/commonjs.js', 'utf8'));
+    var cjs  = precinct(read('commonjs.js'));
     assert(cjs.indexOf('./a') !== -1);
     assert(cjs.indexOf('./b') !== -1);
     assert(cjs.length === 2);
   });
 
   it('grabs dependencies of es6 modules', function() {
-    var cjs  = precinct(fs.readFileSync(__dirname + '/es6.js', 'utf8'));
+    var cjs  = precinct(read('es6.js'));
     assert(cjs.indexOf('lib') !== -1);
     assert(cjs.length === 1);
   });
 
   it('grabs dependencies of es6 modules with embedded jsx', function() {
-    var cjs  = precinct(fs.readFileSync(__dirname + '/jsx.js', 'utf8'));
+    var cjs  = precinct(read('jsx.js'));
     assert(cjs.indexOf('lib') !== -1);
     assert(cjs.length === 1);
   });
 
   it('grabs dependencies of es6 modules with embedded es7', function() {
-    var cjs  = precinct(fs.readFileSync(__dirname + '/es7.js', 'utf8'));
+    var cjs  = precinct(read('es7.js'));
     assert(cjs.indexOf('lib') !== -1);
     assert(cjs.length === 1);
   });
 
   it('does not grabs dependencies of es6 modules with syntax errors', function() {
-    var filePath = __dirname + '/es6WithError.js';
-    var cjs  = precinct(fs.readFileSync(filePath, 'utf8'));
+    var cjs  = precinct(read('es6WithError.js'));
     assert(cjs.length === 0);
   });
 
   it('grabs dependencies of sass files', function() {
-    var content = fs.readFileSync(__dirname + '/styles.scss', 'utf8');
-    var sass = precinct(content, 'sass');
+    var sass = precinct(read('styles.scss'), 'sass');
     assert.deepEqual(sass, ['_foo', 'baz.scss']);
   });
 
   it('grabs dependencies of stylus files', function() {
-    var content = fs.readFileSync(__dirname + '/styles.styl', 'utf8');
-    var result = precinct(content, 'stylus');
+    var result = precinct(read('styles.styl'), 'stylus');
     var expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
+
     assert.deepEqual(result, expected);
   });
 
   it('yields no dependencies for es6 modules with no imports', function() {
-    var cjs = precinct(fs.readFileSync(__dirname + '/es6NoImport.js', 'utf8'));
+    var cjs = precinct(read('es6NoImport.js'));
     assert.equal(cjs.length, 0);
   });
 
   it('yields no dependencies for non-modules', function() {
-    var none = precinct(fs.readFileSync(__dirname + '/none.js', 'utf8'));
+    var none = precinct(read('none.js'));
     assert.equal(none.length, 0);
   });
 
   it('ignores unparsable .js files', function() {
-    var cjs;
-    assert.doesNotThrow(function() {
-      cjs = precinct(fs.readFileSync(__dirname + '/unparseable.js', 'utf8'));
-    }, SyntaxError);
+    var cjs = precinct(read('unparseable.js'));
+
     assert(cjs.indexOf('lib') < 0);
-    assert(cjs.length === 0);
+    assert.equal(cjs.length, 0);
+  });
+
+  it('does not throw on unparsable .js files', function() {
+    assert.doesNotThrow(function() {
+      precinct(read('unparseable.js'));
+    }, SyntaxError);
   });
 
   it('does not blow up when parsing a gruntfile #2', function() {
     assert.doesNotThrow(function() {
-      precinct(fs.readFileSync(__dirname + '/Gruntfile.js', 'utf8'));
+      precinct(read('Gruntfile.js'));
     });
   });
 

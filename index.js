@@ -20,27 +20,36 @@ var natives = process.binding('natives');
  * @param {String} [type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
-module.exports = function(content, type) {
+function precinct(content, type) {
   var dependencies = [];
-  var theDetective;
   var ast;
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     var walker = new Walker();
+
     try {
       // Parse once and distribute the AST to all detectives
       ast = walker.parse(content, walker.options);
+      precinct.ast = ast;
     } catch (e) {
+      // In case a previous call had it populated
+      precinct.ast = null;
       debug('could not parse content');
       return dependencies;
     }
   // SASS files shouldn't be parsed by Acorn
   } else {
     ast = content;
+
+    if (typeof content === 'object') {
+      precinct.ast = content;
+    }
   }
 
   type = type || getModuleType.fromSource(ast);
+
+  var theDetective;
 
   switch (type) {
     case 'commonjs':
@@ -64,6 +73,11 @@ module.exports = function(content, type) {
     dependencies = theDetective(ast);
   }
 
+  // For non-JS files that we don't parse
+  if (theDetective && theDetective.ast) {
+    precinct.ast = theDetective.ast;
+  }
+
   return dependencies;
 };
 
@@ -75,23 +89,26 @@ module.exports = function(content, type) {
  * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
  * @return {String[]}
  */
-module.exports.paperwork = function(filename, options) {
+precinct.paperwork = function(filename, options) {
   options = options || {
     includeCore: true
   };
 
   var content = fs.readFileSync(filename, 'utf8');
+  var ext = path.extname(filename);
   var type;
 
-  if (isSassFile(filename)) {
+  if (ext === '.scss' || ext === '.sass') {
     type = 'sass';
-  } else if (isStylusFile(filename)) {
+
+  } else if (ext === '.styl') {
     type = 'stylus';
-  } else if (isLessFile(filename)) {
+
+  } else if (ext === '.less') {
     type = 'less';
   }
 
-  var deps = this(content, type);
+  var deps = precinct(content, type);
 
   if (!options.includeCore) {
     return deps.filter(function(d) {
@@ -102,27 +119,4 @@ module.exports.paperwork = function(filename, options) {
   return deps;
 };
 
-/**
- * @param  {String}  filename
- * @return {Boolean}
- */
-function isSassFile(filename) {
-  return path.extname(filename) === '.scss' ||
-         path.extname(filename) === '.sass';
-}
-
-/**
- * @param  {String}  filename
- * @return {Boolean}
- */
-function isStylusFile(filename) {
-  return path.extname(filename) === '.styl';
-}
-
-/**
- * @param  {String}  filename
- * @return {Boolean}
- */
-function isLessFile(filename) {
-  return path.extname(filename) === '.less';
-}
+module.exports = precinct;
