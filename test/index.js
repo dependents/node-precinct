@@ -28,16 +28,8 @@ describe('node-precinct', function() {
   });
 
   it('dangles off the parsed ast from a non-js file\'s detective that dangles its parsed ast', function() {
-    var sassAST = {};
-
-    var revert = precinct.__set__('detectiveSass', function detective() {
-      detective.ast = sassAST;
-      return [];
-    });
-
     precinct(read('styles.scss'), 'sass');
-    assert.deepEqual(precinct.ast, sassAST);
-    revert();
+    assert.notDeepEqual(precinct.ast, {});
   });
 
   it('grabs dependencies of amd modules', function() {
