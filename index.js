@@ -35,7 +35,7 @@ function precinct(content, type) {
     } catch (e) {
       // In case a previous call had it populated
       precinct.ast = null;
-      debug('could not parse content');
+      debug('could not parse content: %s', e.message);
       return dependencies;
     }
   // SASS files shouldn't be parsed by Acorn
