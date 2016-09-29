@@ -45,6 +45,10 @@ var deps2 = paperwork('styles.scss');
 
 * `includeCore`: (default: true) set to `false` to exclude core Node dependencies from the list of dependencies.
 
+You can also pass options to individual detectives, for example
+
+* `amd.skipLazyLoaded` tells the AMD detective to omit inner requires
+
 ### License
 
 MIT

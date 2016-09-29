@@ -27,7 +27,7 @@
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
     "debug": "^2.2.0",
-    "detective-amd": "^2.3.4",
+    "detective-amd": "^2.4.0",
     "detective-cjs": "^2.0.0",
     "detective-es6": "^1.1.5",
     "detective-sass": "^1.2.0",
