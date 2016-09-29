@@ -2,7 +2,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var rewire = require('rewire');
-
+var sinon = require('sinon');
 var ast = require('./exampleAST');
 var precinct = rewire('../');
 
@@ -81,6 +81,13 @@ describe('node-precinct', function() {
     assert.deepEqual(result, expected);
   });
 
+  it('supports the object form of type configuration', function() {
+    var result = precinct(read('styles.styl'), {type: 'stylus'});
+    var expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
+
+    assert.deepEqual(result, expected);
+  });
+
   it('yields no dependencies for es6 modules with no imports', function() {
     var cjs = precinct(read('es6NoImport.js'));
     assert.equal(cjs.length, 0);
@@ -133,6 +140,57 @@ describe('node-precinct', function() {
     it('does not filter out core modules by default', function() {
       var deps = precinct.paperwork(__dirname + '/coreModules.js');
       assert(deps.length);
+    });
+
+    it('supports passing detective configuration', function() {
+      var stub = sinon.stub().returns([]);
+      var revert = precinct.__set__('detectiveAmd', stub);
+      var config = {
+        amd: {
+          skipLazyLoaded: true
+        }
+      };
+
+      var deps = precinct.paperwork(__dirname + '/amd.js', {
+        includeCore: false,
+        amd: config.amd
+      });
+
+      assert.deepEqual(stub.args[0][1], config.amd);
+      revert();
+    });
+
+    describe('when given detective configuration', function() {
+      it('still does not filter out core module by default', function() {
+        var stub = sinon.stub().returns([]);
+        var revert = precinct.__set__('precinct', stub);
+
+        var deps = precinct.paperwork(__dirname + '/amd.js', {
+          amd: {
+            skipLazyLoaded: true
+          }
+        });
+
+        assert.equal(stub.args[0][1].includeCore, true);
+        revert();
+      });
+    });
+  });
+
+  describe('when given a configuration object', function() {
+    it('passes amd config to the amd detective', function() {
+      var stub = sinon.stub();
+      var revert = precinct.__set__('detectiveAmd', stub);
+      var config = {
+        amd: {
+          skipLazyLoaded: true
+        }
+      };
+
+      precinct(read('amd.js'), config);
+
+      assert.deepEqual(stub.args[0][1], config.amd);
+      revert();
     });
   });
 });

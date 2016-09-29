@@ -17,12 +17,21 @@ var natives = process.binding('natives');
  * Finds the list of dependencies for the given file
  *
  * @param {String|Object} content - File's content or AST
- * @param {String} [type] - The type of content being passed in. Useful if you want to use a non-js detective
+ * @param {Object} [options]
+ * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
-function precinct(content, type) {
+function precinct(content, options) {
+  options = options || {};
   var dependencies = [];
   var ast;
+  var type = options.type;
+
+  // Legacy form backCompat where type was the second parameter
+  if (typeof options === 'string') {
+    type = options;
+    options = {};
+  }
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
@@ -70,7 +79,7 @@ function precinct(content, type) {
   }
 
   if (theDetective) {
-    dependencies = theDetective(ast);
+    dependencies = theDetective(ast, options[type]);
   }
 
   // For non-JS files that we don't parse
@@ -81,6 +90,16 @@ function precinct(content, type) {
   return dependencies;
 };
 
+function assign(o1, o2) {
+  for (var key in o2) {
+    if (o2.hasOwnProperty(key)) {
+      o1[key] = o2[key];
+    }
+  }
+
+  return o1;
+}
+
 /**
  * Returns the dependencies for the given file path
  *
@@ -90,9 +109,9 @@ function precinct(content, type) {
  * @return {String[]}
  */
 precinct.paperwork = function(filename, options) {
-  options = options || {
+  options = assign({
     includeCore: true
-  };
+  }, options || {});
 
   var content = fs.readFileSync(filename, 'utf8');
   var ext = path.extname(filename);
@@ -108,7 +127,9 @@ precinct.paperwork = function(filename, options) {
     type = 'less';
   }
 
-  var deps = precinct(content, type);
+  options.type = type;
+
+  var deps = precinct(content, options);
 
   if (!options.includeCore) {
     return deps.filter(function(d) {
