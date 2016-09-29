@@ -20,7 +20,8 @@ var natives = process.binding('natives');
  * @param {String} [type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
-function precinct(content, type) {
+function precinct(content, type, options) {
+  options = options || {};
   var dependencies = [];
   var ast;
 
@@ -70,7 +71,7 @@ function precinct(content, type) {
   }
 
   if (theDetective) {
-    dependencies = theDetective(ast);
+    dependencies = theDetective(ast, options[type]);
   }
 
   // For non-JS files that we don't parse
@@ -108,7 +109,7 @@ precinct.paperwork = function(filename, options) {
     type = 'less';
   }
 
-  var deps = precinct(content, type);
+  var deps = precinct(content, type, options);
 
   if (!options.includeCore) {
     return deps.filter(function(d) {
