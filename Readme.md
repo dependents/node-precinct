@@ -25,9 +25,16 @@ var deps = precinct(content);
 
 You may pass options (to individual detectives) based on the module type via an optional second object argument `detective(content, options), for example:
 
-* `amd.skipLazyLoaded` tells the AMD detective to omit lazy-loaded dependencies (i.e., inner requires).
+Example call: `precinct(content, { amd: { skipLazyLoaded: true } });`
+
  - The supported module type prefixes are `amd`, `commonjs`, `es6`, `sass`, `stylus`
- - Example call: `precinct(content, { amd: { skipLazyLoaded: true } });`
+
+Current options:
+
+* `amd.skipLazyLoaded`: tells the AMD detective to omit lazy-loaded dependencies (i.e., inner requires).
+* `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
+ - Note: This will work for any file format that contains an es6 import.
+
 
 Finding non-JavaScript (ex: Sass and Stylus) dependencies:
 
