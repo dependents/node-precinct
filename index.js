@@ -33,13 +33,15 @@ function precinct(content, options) {
     options = {};
   }
 
+  debug('options given: ', options);
+
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     var walker = new Walker();
 
     try {
       // Parse once and distribute the AST to all detectives
-      ast = walker.parse(content, walker.options);
+      ast = walker.parse(content);
       precinct.ast = ast;
     } catch (e) {
       // In case a previous call had it populated
@@ -57,18 +59,20 @@ function precinct(content, options) {
   }
 
   type = type || getModuleType.fromSource(ast);
+  debug('module type: ', type);
 
   var theDetective;
+  var mixedMode = options.es6 && options.es6.mixedImports;
 
   switch (type) {
     case 'commonjs':
-      theDetective = detectiveCjs;
+      theDetective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
       break;
     case 'amd':
       theDetective = detectiveAmd;
       break;
     case 'es6':
-      theDetective = detectiveEs6;
+      theDetective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
       break;
     case 'sass':
       theDetective = detectiveSass;
@@ -89,6 +93,10 @@ function precinct(content, options) {
 
   return dependencies;
 };
+
+function detectiveEs6Cjs(ast, detectiveOptions) {
+  return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
+}
 
 function assign(o1, o2) {
   for (var key in o2) {

@@ -29,11 +29,11 @@
     "debug": "^2.2.0",
     "detective-amd": "^2.4.0",
     "detective-cjs": "^2.0.0",
-    "detective-es6": "^1.1.5",
+    "detective-es6": "^1.1.6",
     "detective-sass": "^1.2.0",
     "detective-stylus": "^1.0.0",
-    "module-definition": "^2.2.3",
-    "node-source-walk": "^3.0.0"
+    "module-definition": "^2.2.4",
+    "node-source-walk": "^3.2.0"
   },
   "devDependencies": {
     "jscs": "~2.11.0",

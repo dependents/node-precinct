@@ -119,8 +119,8 @@ describe('node-precinct', function() {
 
   describe('paperwork', function() {
     it('returns the dependencies for the given filepath', function() {
-      assert(precinct.paperwork(__dirname + '/es6.js').length);
-      assert(precinct.paperwork(__dirname + '/styles.scss').length);
+      assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
+      assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
     });
 
     it('throws if the file cannot be found', function() {
@@ -191,6 +191,32 @@ describe('node-precinct', function() {
 
       assert.deepEqual(stub.args[0][1], config.amd);
       revert();
+    });
+
+    describe('that sets mixedImports for es6', function() {
+      describe('for a file identified as es6', function() {
+        it('returns both the commonjs and es6 dependencies', function() {
+          var deps = precinct(read('es6MixedImport.js'), {
+            es6: {
+              mixedImports: true
+            }
+          });
+
+          assert.equal(deps.length, 2);
+        });
+      });
+
+      describe('for a file identified as cjs', function() {
+        it('returns both the commonjs and es6 dependencies', function() {
+          var deps = precinct(read('cjsMixedImport.js'), {
+            es6: {
+              mixedImports: true
+            }
+          });
+
+          assert.equal(deps.length, 2);
+        });
+      });
     });
   });
 });
