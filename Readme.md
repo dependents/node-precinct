@@ -61,6 +61,12 @@ Supported options:
 * `includeCore`: (default: true) set to `false` to exclude core Node dependencies from the list of dependencies.
 * You may also pass detective-specific configuration like you would to `precinct(content, options)`.
 
+#### CLI
+
+*Assumes a global install of `npm install -g precinct`*
+
+`precinct path/to/file`
+
 ### License
 
 MIT

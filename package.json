@@ -6,6 +6,9 @@
   "scripts": {
     "test": "jscs index.js test/index.js && mocha test/index.js"
   },
+  "bin": {
+    "precinct": "bin/cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:mrjoelkemp/node-precinct.git"
@@ -26,6 +29,7 @@
   },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
+    "commander": "^2.9.0",
     "debug": "^2.2.0",
     "detective-amd": "^2.4.0",
     "detective-cjs": "^2.0.0",
