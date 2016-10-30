@@ -219,4 +219,42 @@ describe('node-precinct', function() {
       });
     });
   });
+
+  describe('when lazy exported dependencies in CJS', function() {
+    it('grabs those lazy dependencies', function() {
+      var cjs = precinct(read('cjsExportLazy.js'));
+
+      assert.equal(cjs[0], './amd');
+      assert.equal(cjs[1], './es6');
+      assert.equal(cjs[2], './es7');
+      assert.equal(cjs.length, 3);
+    });
+  });
+
+  describe('when given an es6 file', function() {
+    describe('that uses CJS imports for lazy dependencies', function() {
+      describe('and mixedImport mode is turned on', function() {
+        it('grabs the lazy imports', function() {
+          var es6 = precinct(read('es6MixedExportLazy.js'), {
+            es6: {
+              mixedImports: true
+            }
+          });
+
+          assert.equal(es6[0], './amd');
+          assert.equal(es6[1], './es6');
+          assert.equal(es6[2], './es7');
+          assert.equal(es6.length, 3);
+        });
+      });
+
+      describe('and mixedImport mode is turned off', function() {
+        it('does not grab any imports', function() {
+          var es6 = precinct(read('es6MixedExportLazy.js'));
+
+          assert.equal(es6.length, 0);
+        });
+      });
+    });
+  });
 });
