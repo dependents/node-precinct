@@ -65,7 +65,9 @@ Supported options:
 
 *Assumes a global install of `npm install -g precinct`*
 
-`precinct path/to/file`
+`precinct [options] path/to/file`
+
+* Run `precinct --help` to see options
 
 ### License
 
