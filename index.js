@@ -6,6 +6,7 @@ var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
 var detectiveEs6 = require('detective-es6');
 var detectiveSass = require('detective-sass');
+var detectiveScss = require('detective-scss');
 var detectiveStylus = require('detective-stylus');
 
 var fs = require('fs');
@@ -77,6 +78,9 @@ function precinct(content, options) {
     case 'sass':
       theDetective = detectiveSass;
       break;
+    case 'scss':
+      theDetective = detectiveScss;
+      break;
     case 'stylus':
       theDetective = detectiveStylus;
       break;
@@ -125,14 +129,11 @@ precinct.paperwork = function(filename, options) {
   var ext = path.extname(filename);
   var type;
 
-  if (ext === '.scss' || ext === '.sass') {
-    type = 'sass';
+  if (ext === '.scss' || ext === '.sass' || ext === '.less') {
+    type = ext.replace('.', '');
 
   } else if (ext === '.styl') {
     type = 'stylus';
-
-  } else if (ext === '.less') {
-    type = 'less';
   }
 
   options.type = type;
