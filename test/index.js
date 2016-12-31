@@ -27,8 +27,13 @@ describe('node-precinct', function() {
     assert.notDeepEqual(precinct.ast, ast);
   });
 
-  it('dangles off the parsed ast from a non-js file\'s detective that dangles its parsed ast', function() {
-    precinct(read('styles.scss'), 'sass');
+  it('dangles off the parsed ast from a scss detective', function() {
+    precinct(read('styles.scss'), 'scss');
+    assert.notDeepEqual(precinct.ast, {});
+  });
+
+  it('dangles off the parsed ast from a sass detective', function() {
+    precinct(read('styles.sass'), 'sass');
     assert.notDeepEqual(precinct.ast, {});
   });
 
@@ -69,9 +74,14 @@ describe('node-precinct', function() {
     assert(cjs.length === 0);
   });
 
-  it('grabs dependencies of sass files', function() {
-    var sass = precinct(read('styles.scss'), 'sass');
-    assert.deepEqual(sass, ['_foo', 'baz.scss']);
+  it('grabs dependencies of scss files', function() {
+    var scss = precinct(read('styles.scss'), 'scss');
+    assert.deepEqual(scss, ['_foo', 'baz.scss']);
+  });
+
+  it('grabs dependencies of scss files', function() {
+    var sass = precinct(read('styles.sass'), 'sass');
+    assert.deepEqual(sass, ['_foo']);
   });
 
   it('grabs dependencies of stylus files', function() {
