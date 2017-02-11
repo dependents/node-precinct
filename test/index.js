@@ -91,6 +91,13 @@ describe('node-precinct', function() {
     assert.deepEqual(result, expected);
   });
 
+  it('grabs dependencies of less files', function() {
+    var result = precinct(read('styles.less'), 'less');
+    var expected = ['_foo', '_bar.css', 'baz.less'];
+
+    assert.deepEqual(result, expected);
+  });
+
   it('supports the object form of type configuration', function() {
     var result = precinct(read('styles.styl'), {type: 'stylus'});
     var expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
