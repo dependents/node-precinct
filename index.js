@@ -5,6 +5,7 @@ var Walker = require('node-source-walk');
 var detectiveCjs = require('detective-cjs');
 var detectiveAmd = require('detective-amd');
 var detectiveEs6 = require('detective-es6');
+var detectiveLess = require('detective-less');
 var detectiveSass = require('detective-sass');
 var detectiveScss = require('detective-scss');
 var detectiveStylus = require('detective-stylus');
@@ -77,6 +78,9 @@ function precinct(content, options) {
       break;
     case 'sass':
       theDetective = detectiveSass;
+      break;
+    case 'less':
+      theDetective = detectiveLess;
       break;
     case 'scss':
       theDetective = detectiveScss;

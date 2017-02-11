@@ -9,8 +9,7 @@ Uses the appropriate detective to find the dependencies of a file or its AST.
 Supports:
 
 * JavaScript modules: AMD, CommonJS, and ES6.
-* Sass dependencies via [detective-sass](https://github.com/mrjoelkemp/node-detective-sass).
-* Stylus
+* CSS Preprocessors: Sass, Stylus, and Less
 
 ### Usage
 
@@ -27,7 +26,7 @@ You may pass options (to individual detectives) based on the module type via an 
 
 Example call: `precinct(content, { amd: { skipLazyLoaded: true } });`
 
- - The supported module type prefixes are `amd`, `commonjs`, `es6`, `sass`, `stylus`
+ - The supported module type prefixes are `amd`, `commonjs`, `es6`, `sass`, `stylus`, `less`
 
 Current options:
 

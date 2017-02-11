@@ -19,6 +19,7 @@
     "commonjs",
     "es6",
     "sass",
+    "less",
     "detective",
     "dependencies"
   ],
@@ -34,6 +35,7 @@
     "detective-amd": "^2.4.0",
     "detective-cjs": "^2.0.0",
     "detective-es6": "^1.1.6",
+    "detective-less": "1.0.0",
     "detective-sass": "^2.0.0",
     "detective-scss": "^1.0.0",
     "detective-stylus": "^1.0.0",
