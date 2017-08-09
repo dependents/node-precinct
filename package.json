@@ -39,6 +39,7 @@
     "detective-sass": "^2.0.0",
     "detective-scss": "^1.0.0",
     "detective-stylus": "^1.0.0",
+    "detective-typescript": "^1.0.0",
     "module-definition": "^2.2.4",
     "node-source-walk": "^3.2.0"
   },
