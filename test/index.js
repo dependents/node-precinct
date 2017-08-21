@@ -98,6 +98,18 @@ describe('node-precinct', function() {
     assert.deepEqual(result, expected);
   });
 
+  it('grabs dependencies of typescript files', function() {
+    var result = precinct(read('typescript.ts'), 'ts');
+    var expected = ['fs', 'lib', './bar', './my-module.js', './ZipCodeValidator'];
+
+    assert.deepEqual(result, expected);
+  });
+
+  it('does not grabs dependencies of typescript modules with syntax errors', function() {
+    var result = precinct(read('typescriptWithError.ts'));
+    assert(result.length === 0);
+  });
+
   it('supports the object form of type configuration', function() {
     var result = precinct(read('styles.styl'), {type: 'stylus'});
     var expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
@@ -138,6 +150,7 @@ describe('node-precinct', function() {
     it('returns the dependencies for the given filepath', function() {
       assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
       assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
+      assert.ok(precinct.paperwork(__dirname + '/typescript.ts').length);
     });
 
     it('throws if the file cannot be found', function() {
