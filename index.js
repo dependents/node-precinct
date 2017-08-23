@@ -9,6 +9,7 @@ var detectiveLess = require('detective-less');
 var detectiveSass = require('detective-sass');
 var detectiveScss = require('detective-scss');
 var detectiveStylus = require('detective-stylus');
+var detectiveTypeScript = require('detective-typescript');
 
 var fs = require('fs');
 var path = require('path');
@@ -88,6 +89,9 @@ function precinct(content, options) {
     case 'stylus':
       theDetective = detectiveStylus;
       break;
+    case 'ts':
+      theDetective = detectiveTypeScript;
+      break;
   }
 
   if (theDetective) {
@@ -133,7 +137,7 @@ precinct.paperwork = function(filename, options) {
   var ext = path.extname(filename);
   var type;
 
-  if (ext === '.scss' || ext === '.sass' || ext === '.less') {
+  if (ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts') {
     type = ext.replace('.', '');
 
   } else if (ext === '.styl') {
