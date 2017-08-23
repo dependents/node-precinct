@@ -9,6 +9,7 @@ Uses the appropriate detective to find the dependencies of a file or its AST.
 Supports:
 
 * JavaScript modules: AMD, CommonJS, and ES6.
+* Typescript
 * CSS Preprocessors: Sass, Stylus, and Less
 
 ### Usage
