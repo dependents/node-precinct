@@ -28,6 +28,9 @@
   "bugs": {
     "url": "https://github.com/mrjoelkemp/node-precinct/issues"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
     "commander": "^2.11.0",
@@ -39,7 +42,7 @@
     "detective-sass": "^2.0.0",
     "detective-scss": "^1.0.0",
     "detective-stylus": "^1.0.0",
-    "detective-typescript": "^1.0.0",
+    "detective-typescript": "^2.0.0",
     "module-definition": "^2.2.4",
     "node-source-walk": "^3.3.0"
   },
