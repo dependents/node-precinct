@@ -28,6 +28,9 @@
   "bugs": {
     "url": "https://github.com/mrjoelkemp/node-precinct/issues"
   },
+  "engines": {
+    "node": ">=6.0.0"
+  },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
     "commander": "^2.11.0",
