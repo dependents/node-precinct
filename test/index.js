@@ -74,12 +74,17 @@ describe('node-precinct', function() {
     assert(cjs.length === 0);
   });
 
+  it('grabs dependencies of css files', function() {
+    var css = precinct(read('styles.css'), 'css');
+    assert.deepEqual(css, ['foo.css', 'baz.css', 'bla.css', 'another.css']);
+  });
+
   it('grabs dependencies of scss files', function() {
     var scss = precinct(read('styles.scss'), 'scss');
     assert.deepEqual(scss, ['_foo', 'baz.scss']);
   });
 
-  it('grabs dependencies of scss files', function() {
+  it('grabs dependencies of sass files', function() {
     var sass = precinct(read('styles.sass'), 'sass');
     assert.deepEqual(sass, ['_foo']);
   });
@@ -151,6 +156,7 @@ describe('node-precinct', function() {
       assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
       assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
       assert.ok(precinct.paperwork(__dirname + '/typescript.ts').length);
+      assert.ok(precinct.paperwork(__dirname + '/styles.css').length);
     });
 
     it('throws if the file cannot be found', function() {
