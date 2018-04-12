@@ -11,6 +11,7 @@ Supports:
 * JavaScript modules: AMD, CommonJS, and ES6.
 * Typescript
 * CSS Preprocessors: Sass, Stylus, and Less
+* CSS (PostCSS)
 
 ### Usage
 
