@@ -156,6 +156,7 @@ describe('node-precinct', function() {
       assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
       assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
       assert.ok(precinct.paperwork(__dirname + '/typescript.ts').length);
+      assert.ok(precinct.paperwork(__dirname + '/styles.css').length);
     });
 
     it('throws if the file cannot be found', function() {
