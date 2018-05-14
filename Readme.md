@@ -35,6 +35,7 @@ Current options:
 * `amd.skipLazyLoaded`: tells the AMD detective to omit lazy-loaded dependencies (i.e., inner requires).
 * `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
  - Note: This will work for any file format that contains an es6 import.
+* `css.url`: tells the CSS detective to include `url()` references to images, fonts, etc.
 
 
 Finding non-JavaScript (ex: Sass and Stylus) dependencies:
