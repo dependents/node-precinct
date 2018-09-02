@@ -50,8 +50,8 @@
   "devDependencies": {
     "jscs": "~3.0.7",
     "jscs-preset-mrjoelkemp": "~2.0.0",
-    "mocha": "~5.0.0",
-    "rewire": "~3.0.2",
-    "sinon": "^4.1.6"
+    "mocha": "^5.2.0",
+    "rewire": "^4.0.1",
+    "sinon": "^6.1.5"
   }
 }
