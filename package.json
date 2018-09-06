@@ -35,15 +35,15 @@
   "dependencies": {
     "commander": "^2.17.0",
     "debug": "^3.1.0",
-    "detective-amd": "^2.4.0",
+    "detective-amd": "^3.0.0",
     "detective-cjs": "^3.0.0",
     "detective-es6": "^2.0.0",
     "detective-less": "^1.0.1",
-    "detective-postcss": "^2.1.0",
-    "detective-sass": "^2.0.1",
+    "detective-postcss": "^3.0.0",
+    "detective-sass": "^3.0.0",
     "detective-scss": "^2.0.0",
     "detective-stylus": "^1.0.0",
-    "detective-typescript": "^3.0.0",
+    "detective-typescript": "^4.0.0",
     "module-definition": "^3.0.0",
     "node-source-walk": "^4.0.0"
   },
@@ -52,6 +52,6 @@
     "jscs-preset-mrjoelkemp": "~2.0.0",
     "mocha": "^5.2.0",
     "rewire": "^4.0.1",
-    "sinon": "^6.1.5"
+    "sinon": "^6.2.0"
   }
 }
