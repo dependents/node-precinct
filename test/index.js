@@ -114,6 +114,12 @@ describe('node-precinct', function() {
     var result = precinct(read('typescriptWithError.ts'));
     assert(result.length === 0);
   });
+  
+  it('grabs dependencies of typescript tsx files', function() {
+    var result = precinct(read('typescript-jsx.tsx'), 'tsx');
+    var expected = ['foo'];
+    assert.deepEqual(result, expected);
+  });
 
   it('supports the object form of type configuration', function() {
     var result = precinct(read('styles.styl'), {type: 'stylus'});
