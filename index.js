@@ -146,12 +146,19 @@ precinct.paperwork = function(filename, options) {
 
   if (ext === '.css' || ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts' || ext === '.tsx') {
     type = ext.replace('.', '');
-
   } else if (ext === '.styl') {
     type = 'stylus';
   }
 
   options.type = type;
+  
+  if (type === 'tsx') {
+    options.tsx = assign({
+      ecmaFeatures: assign({
+        jsx: true
+      }, (options.tsx && options.tsx.ecmaFeatures) || {});
+    }, options.tsx || {});
+  }
 
   var deps = precinct(content, options);
 
