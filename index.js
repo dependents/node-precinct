@@ -144,7 +144,7 @@ precinct.paperwork = function(filename, options) {
   var ext = path.extname(filename);
   var type;
 
-  if (ext === '.css' || ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts') {
+  if (ext === '.css' || ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts' || ext === '.tsx') {
     type = ext.replace('.', '');
 
   } else if (ext === '.styl') {
