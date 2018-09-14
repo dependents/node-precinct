@@ -96,6 +96,9 @@ function precinct(content, options) {
     case 'ts':
       theDetective = detectiveTypeScript;
       break;
+    case 'tsx':
+      theDetective = detectiveTypeScript;
+      break;
   }
 
   if (theDetective) {
