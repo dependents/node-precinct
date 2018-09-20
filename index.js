@@ -97,7 +97,7 @@ function precinct(content, options) {
       theDetective = detectiveTypeScript;
       break;
     case 'tsx':
-      theDetective = detectiveTypeScript;
+      theDetective = detectiveTypeScript.tsx;
       break;
   }
 
@@ -151,14 +151,6 @@ precinct.paperwork = function(filename, options) {
   }
 
   options.type = type;
-  
-  if (type === 'tsx') {
-    options.tsx = assign({
-      ecmaFeatures: assign({
-        jsx: true
-      }, (options.tsx && options.tsx.ecmaFeatures) || {});
-    }, options.tsx || {});
-  }
 
   var deps = precinct(content, options);
 
