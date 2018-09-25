@@ -267,6 +267,15 @@ describe('node-precinct', function() {
     });
   });
 
+  describe('when a main require is used', function() {
+    it('grabs those dependencies', function() {
+      var cjs = precinct(read('commonjs-requiremain.js'));
+
+      assert.equal(cjs[0], './b');
+      assert.equal(cjs.length, 1);
+    });
+  });
+
   describe('when given an es6 file', function() {
     describe('that uses CJS imports for lazy dependencies', function() {
       describe('and mixedImport mode is turned on', function() {
