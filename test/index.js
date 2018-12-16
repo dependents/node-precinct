@@ -152,7 +152,7 @@ describe('node-precinct', function() {
   });
 
   describe('paperwork', function() {
-    it('uses fs from options if provided', function() {
+    it('uses fileSystem from options if provided', function() {
       var fsMock = {
         readFileSync: function(path, encoding) {
           assert.equal(path, '/foo.js');
@@ -161,7 +161,7 @@ describe('node-precinct', function() {
       };
 
       var options = {
-        fs: fsMock
+        fileSystem: fsMock
       };
       var results = precinct.paperwork('/foo.js', options);
       assert.equal(results.length, 1);
