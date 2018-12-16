@@ -130,6 +130,7 @@ function assign(o1, o2) {
  * @param {String} filename
  * @param {Object} [options]
  * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
+ * @param {Object} [options.fs=undefined] - An alternative fs implementation to use for reading the file path.
  * @return {String[]}
  */
 precinct.paperwork = function(filename, options) {
@@ -137,7 +138,8 @@ precinct.paperwork = function(filename, options) {
     includeCore: true
   }, options || {});
 
-  var content = fs.readFileSync(filename, 'utf8');
+  var fileSystem = options.fs || fs;
+  var content =  fileSystem.readFileSync(filename, 'utf8');
   var ext = path.extname(filename);
   var type;
 

@@ -152,6 +152,22 @@ describe('node-precinct', function() {
   });
 
   describe('paperwork', function() {
+    it('uses fs from options if provided', function() {
+      var fsMock = {
+        readFileSync: function(path, encoding) {
+          assert.equal(path, '/foo.js');
+          return 'var assert = require("assert");';
+        }
+      };
+
+      var options = {
+        fs: fsMock
+      };
+      var results = precinct.paperwork('/foo.js', options);
+      assert.equal(results.length, 1);
+      assert.equal(results[0], 'assert');
+    });
+
     it('returns the dependencies for the given filepath', function() {
       assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
       assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
