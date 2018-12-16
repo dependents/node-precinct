@@ -63,7 +63,6 @@ Supported options:
 * `includeCore`: (default: true) set to `false` to exclude core Node dependencies from the list of dependencies.
 * `fs`: (default: undefined) set to an alternative `fs` implementation that will be used to read the file path.
 * You may also pass detective-specific configuration like you would to `precinct(content, options)`.
-* 
 
 #### CLI
 
