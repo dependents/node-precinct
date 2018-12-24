@@ -41,11 +41,13 @@ function precinct(content, options) {
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
+    debug('we assume this is JS');
     var walker = new Walker();
 
     try {
       // Parse once and distribute the AST to all detectives
       ast = walker.parse(content);
+      debug('parsed the file content into an ast');
       precinct.ast = ast;
     } catch (e) {
       // In case a previous call had it populated
@@ -151,16 +153,22 @@ precinct.paperwork = function(filename, options) {
   var type;
 
   if (ext === '.styl') {
+    debug('paperwork: converting .styl into the stylus type');
     type = 'stylus';
   }
   // We need to sniff the JS module to find its type, not by extension
   // Other possible types pass through normally
-  else if (ext !== '.js') {
+  else if (ext !== '.js' && ext !== '.jsx') {
+    debug('paperwork: stripping the dot from the extension to serve as the type');
     type = ext.replace('.', '');
   }
 
-  options.type = type;
+  if (type) {
+    debug('paperwork: setting the module type');
+    options.type = type;
+  }
 
+  debug('paperwork: invoking precinct');
   var deps = precinct(content, options);
 
   if (!options.includeCore) {
@@ -169,6 +177,7 @@ precinct.paperwork = function(filename, options) {
     });
   }
 
+  debug('paperwork: got these results\n', deps);
   return deps;
 };
 

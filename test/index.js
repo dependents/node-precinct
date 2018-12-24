@@ -159,6 +159,13 @@ describe('node-precinct', function() {
   });
 
   describe('paperwork', function() {
+    it('grabs dependencies of jsx files', function() {
+      var result = precinct.paperwork(__dirname + '/module.jsx');
+      var expected = ['./es6NoImport'];
+
+      assert.deepEqual(result, expected);
+    });
+
     it('uses fileSystem from options if provided', function() {
       var fsMock = {
         readFileSync: function(path, encoding) {
