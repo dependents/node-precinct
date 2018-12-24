@@ -110,6 +110,13 @@ describe('node-precinct', function() {
     assert.deepEqual(result, expected);
   });
 
+  it('grabs dependencies of typescript tsx files', function() {
+    var result = precinct(read('module.tsx'), 'tsx');
+    var expected = ['./none'];
+
+    assert.deepEqual(result, expected);
+  });
+
   it('does not grabs dependencies of typescript modules with syntax errors', function() {
     var result = precinct(read('typescriptWithError.ts'));
     assert(result.length === 0);

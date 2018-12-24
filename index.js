@@ -96,10 +96,15 @@ function precinct(content, options) {
     case 'ts':
       theDetective = detectiveTypeScript;
       break;
+    case 'tsx':
+      theDetective = detectiveTypeScript.tsx;
+      break;
   }
 
   if (theDetective) {
     dependencies = theDetective(ast, options[type]);
+  } else {
+    debug('no detective found for: ' + type);
   }
 
   // For non-JS files that we don't parse
@@ -108,7 +113,7 @@ function precinct(content, options) {
   }
 
   return dependencies;
-};
+}
 
 function detectiveEs6Cjs(ast, detectiveOptions) {
   return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
@@ -145,11 +150,13 @@ precinct.paperwork = function(filename, options) {
   var ext = path.extname(filename);
   var type;
 
-  if (ext === '.css' || ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts') {
-    type = ext.replace('.', '');
-
-  } else if (ext === '.styl') {
+  if (ext === '.styl') {
     type = 'stylus';
+  }
+  // We need to sniff the JS module to find its type, not by extension
+  // Other possible types pass through normally
+  else if (ext !== '.js') {
+    type = ext.replace('.', '');
   }
 
   options.type = type;
