@@ -41,13 +41,11 @@ function precinct(content, options) {
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
-    debug('we assume this is JS');
     var walker = new Walker();
 
     try {
       // Parse once and distribute the AST to all detectives
       ast = walker.parse(content);
-      debug('parsed the file content into an ast');
       precinct.ast = ast;
     } catch (e) {
       // In case a previous call had it populated
@@ -96,17 +94,12 @@ function precinct(content, options) {
       theDetective = detectiveStylus;
       break;
     case 'ts':
-      theDetective = detectiveTypeScript;
-      break;
-    case 'tsx':
-      theDetective = detectiveTypeScript.tsx;
+      theDetective = mixedMode ? detectiveTS : detectiveTypeScript;
       break;
   }
 
   if (theDetective) {
     dependencies = theDetective(ast, options[type]);
-  } else {
-    debug('no detective found for: ' + type);
   }
 
   // For non-JS files that we don't parse
@@ -115,10 +108,14 @@ function precinct(content, options) {
   }
 
   return dependencies;
-}
+};
 
 function detectiveEs6Cjs(ast, detectiveOptions) {
   return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
+}
+
+function detectiveTS(ast, detectiveOptions) {
+  return detectiveTypeScript (ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
 }
 
 function assign(o1, o2) {
@@ -137,7 +134,6 @@ function assign(o1, o2) {
  * @param {String} filename
  * @param {Object} [options]
  * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
- * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
  * @return {String[]}
  */
 precinct.paperwork = function(filename, options) {
@@ -145,30 +141,19 @@ precinct.paperwork = function(filename, options) {
     includeCore: true
   }, options || {});
 
-  // Note: released with options.fs but intended options.fileSystem for consistency in the community
-  // TODO: Remove options.fs in the next major version update
-  var fileSystem = options.fileSystem || options.fs || fs;
-  var content =  fileSystem.readFileSync(filename, 'utf8');
+  var content = fs.readFileSync(filename, 'utf8');
   var ext = path.extname(filename);
   var type;
 
-  if (ext === '.styl') {
-    debug('paperwork: converting .styl into the stylus type');
+  if (ext === '.css' || ext === '.scss' || ext === '.sass' || ext === '.less' || ext === '.ts') {
+    type = ext.replace('.', '');
+
+  } else if (ext === '.styl') {
     type = 'stylus';
   }
-  // We need to sniff the JS module to find its type, not by extension
-  // Other possible types pass through normally
-  else if (ext !== '.js' && ext !== '.jsx') {
-    debug('paperwork: stripping the dot from the extension to serve as the type');
-    type = ext.replace('.', '');
-  }
 
-  if (type) {
-    debug('paperwork: setting the module type');
-    options.type = type;
-  }
+  options.type = type;
 
-  debug('paperwork: invoking precinct');
   var deps = precinct(content, options);
 
   if (!options.includeCore) {
@@ -177,7 +162,6 @@ precinct.paperwork = function(filename, options) {
     });
   }
 
-  debug('paperwork: got these results\n', deps);
   return deps;
 };
 
