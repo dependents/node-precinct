@@ -331,5 +331,13 @@ describe('node-precinct', function() {
         });
       });
     });
+
+    describe('that uses dynamic imports', function() {
+      it('grabs the dynamic import', function() {
+        var es6 = precinct(read('es6DynamicImport.js'));
+
+        assert.equal(es6[0], './bar');
+      });
+    });
   });
 });
