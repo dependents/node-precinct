@@ -29,7 +29,7 @@
     "url": "https://github.com/mrjoelkemp/node-precinct/issues"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": "^10.13 || ^12 || >=14"
   },
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
