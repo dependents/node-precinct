@@ -25,8 +25,7 @@ var natives = process.binding('natives');
  * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
-function precinct(content, options) {
-  options = options || {};
+function precinct(content, options = {}) {
   var dependencies = [];
   var ast;
   var type = options.type;
@@ -130,10 +129,10 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
  * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
  * @return {String[]}
  */
-precinct.paperwork = function(filename, options) {
+precinct.paperwork = function(filename, options = {}) {
   options = Object.assign({
     includeCore: true
-  }, options || {});
+  }, options);
 
   // Note: released with options.fs but intended options.fileSystem for consistency in the community
   // TODO: Remove options.fs in the next major version update
