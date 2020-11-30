@@ -121,16 +121,6 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
   return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
 }
 
-function assign(o1, o2) {
-  for (var key in o2) {
-    if (o2.hasOwnProperty(key)) {
-      o1[key] = o2[key];
-    }
-  }
-
-  return o1;
-}
-
 /**
  * Returns the dependencies for the given file path
  *
@@ -141,7 +131,7 @@ function assign(o1, o2) {
  * @return {String[]}
  */
 precinct.paperwork = function(filename, options) {
-  options = assign({
+  options = Object.assign({
     includeCore: true
   }, options || {});
 
