@@ -134,9 +134,7 @@ precinct.paperwork = function(filename, options = {}) {
     includeCore: true
   }, options);
 
-  // Note: released with options.fs but intended options.fileSystem for consistency in the community
-  // TODO: Remove options.fs in the next major version update
-  var fileSystem = options.fileSystem || options.fs || fs;
+  var fileSystem = options.fileSystem || fs;
   var content =  fileSystem.readFileSync(filename, 'utf8');
   var ext = path.extname(filename);
   var type;
