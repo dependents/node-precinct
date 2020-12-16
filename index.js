@@ -25,8 +25,7 @@ var natives = process.binding('natives');
  * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-js detective
  * @return {String[]}
  */
-function precinct(content, options) {
-  options = options || {};
+function precinct(content, options = {}) {
   var dependencies = [];
   var ast;
   var type = options.type;
@@ -121,16 +120,6 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
   return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
 }
 
-function assign(o1, o2) {
-  for (var key in o2) {
-    if (o2.hasOwnProperty(key)) {
-      o1[key] = o2[key];
-    }
-  }
-
-  return o1;
-}
-
 /**
  * Returns the dependencies for the given file path
  *
@@ -140,14 +129,12 @@ function assign(o1, o2) {
  * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
  * @return {String[]}
  */
-precinct.paperwork = function(filename, options) {
-  options = assign({
+precinct.paperwork = function(filename, options = {}) {
+  options = Object.assign({
     includeCore: true
-  }, options || {});
+  }, options);
 
-  // Note: released with options.fs but intended options.fileSystem for consistency in the community
-  // TODO: Remove options.fs in the next major version update
-  var fileSystem = options.fileSystem || options.fs || fs;
+  var fileSystem = options.fileSystem || fs;
   var content =  fileSystem.readFileSync(filename, 'utf8');
   var ext = path.extname(filename);
   var type;
