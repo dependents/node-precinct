@@ -28,7 +28,7 @@ You may pass options (to individual detectives) based on the module type via an 
 
 Example call: `precinct(content, { amd: { skipLazyLoaded: true } });`
 
- - The supported module type prefixes are `amd`, `commonjs`, `es6`, `sass`, `stylus`, `less`
+ - The supported module type prefixes are `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`
 
 Current options:
 
