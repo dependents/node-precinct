@@ -143,6 +143,10 @@ precinct.paperwork = function(filename, options = {}) {
     debug('paperwork: converting .styl into the stylus type');
     type = 'stylus';
   }
+  else if (ext === '.cjs') {
+    debug('paperwork: converting .cjs into the commonjs type');
+    type = 'commonjs';
+  }
   // We need to sniff the JS module to find its type, not by extension
   // Other possible types pass through normally
   else if (ext !== '.js' && ext !== '.jsx') {
