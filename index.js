@@ -142,8 +142,7 @@ precinct.paperwork = function(filename, options = {}) {
   if (ext === '.styl') {
     debug('paperwork: converting .styl into the stylus type');
     type = 'stylus';
-  }
-  else if (ext === '.cjs') {
+  } else if (ext === '.cjs') {
     debug('paperwork: converting .cjs into the commonjs type');
     type = 'commonjs';
   }
