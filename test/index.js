@@ -203,6 +203,12 @@ describe('node-precinct', function() {
       assert(!deps.length);
     });
 
+    it('handles cjs files as commonjs', function() {
+      var deps = precinct.paperwork(__dirname + '/commonjs.cjs');
+      assert(deps.includes('./a'));
+      assert(deps.includes('./b'));
+    });
+
     it('does not filter out core modules by default', function() {
       var deps = precinct.paperwork(__dirname + '/coreModules.js');
       assert(deps.length);
