@@ -27,4 +27,4 @@ if (program.type) {
   options.type = program.type;
 }
 
-console.log(precinct(content, options));
+console.log(precinct(content, options).join('\n'));
