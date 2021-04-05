@@ -24,7 +24,7 @@ var content = fs.readFileSync('myFile.js', 'utf8');
 var deps = precinct(content);
 ```
 
-You may pass options (to individual detectives) based on the module type via an optional second object argument `detective(content, options), for example:
+You may pass options (to individual detectives) based on the module type via an optional second object argument `detective(content, options)`, for example:
 
 Example call: `precinct(content, { amd: { skipLazyLoaded: true } });`
 
