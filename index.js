@@ -163,6 +163,9 @@ precinct.paperwork = function(filename, options = {}) {
 
   if (!options.includeCore) {
     return deps.filter(function(d) {
+      if (d.startsWith('node:')) {
+        return false;
+      }
       return !natives[d];
     });
   }
