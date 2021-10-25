@@ -338,6 +338,16 @@ describe('node-precinct', function() {
       });
     });
 
+    describe('that imports node-internal with node:-prefix', () => {
+      it('assumes that it exists', () => {
+        var deps = precinct.paperwork(path.join(__dirname, 'internalNodePrefix.js'), {
+          includeCore: false
+        });
+        assert(!deps.includes('node:nonexistant'));
+        assert.deepEqual(deps, ['streams']);
+      });
+    });
+
     describe('that uses dynamic imports', function() {
       it('grabs the dynamic import', function() {
         var es6 = precinct(read('es6DynamicImport.js'));
