@@ -70,6 +70,7 @@ function precinct(content, options = {}) {
   var mixedMode = options.es6 && options.es6.mixedImports;
 
   switch (type) {
+    case 'cjs':
     case 'commonjs':
       theDetective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
       break;
@@ -79,6 +80,8 @@ function precinct(content, options = {}) {
     case 'amd':
       theDetective = detectiveAmd;
       break;
+    case 'mjs':
+    case 'esm':
     case 'es6':
       theDetective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
       break;
