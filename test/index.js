@@ -356,4 +356,16 @@ describe('node-precinct', function() {
       });
     });
   });
+
+  it('handles the esm extension', function() {
+    var cjs  = precinct(read('es6.esm'));
+    assert(cjs.indexOf('lib') !== -1);
+    assert(cjs.length === 1);
+  });
+
+  it('handles the mjs extension', function() {
+    var cjs  = precinct(read('es6.mjs'));
+    assert(cjs.indexOf('lib') !== -1);
+    assert(cjs.length === 1);
+  });
 });
