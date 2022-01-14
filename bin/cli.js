@@ -20,12 +20,14 @@ const options = {
   es6: {}
 };
 
-if (program.es6MixedImports) {
+const cliOptions = program.opts();
+
+if (cliOptions.es6MixedImports) {
   options.es6.mixedImports = true;
 }
 
-if (program.type) {
-  options.type = program.type;
+if (cliOptions.type) {
+  options.type = cliOptions.type;
 }
 
 console.log(precinct(content, options).join('\n'));
