@@ -31,6 +31,10 @@
   "engines": {
     "node": "^10.13 || ^12 || >=14"
   },
+  "files": [
+    "bin/cli.js",
+    "index.js"
+  ],
   "homepage": "https://github.com/mrjoelkemp/node-precinct",
   "dependencies": {
     "commander": "^2.20.3",
