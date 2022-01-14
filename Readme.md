@@ -16,12 +16,12 @@ Supports:
 ### Usage
 
 ```js
-var precinct = require('precinct');
+const precinct = require('precinct');
 
-var content = fs.readFileSync('myFile.js', 'utf8');
+const content = fs.readFileSync('myFile.js', 'utf8');
 
 // Pass in a file's content or an AST
-var deps = precinct(content);
+const deps = precinct(content);
 ```
 
 You may pass options (to individual detectives) based on the module type via an optional second object argument `detective(content, options)`, for example:
@@ -41,19 +41,19 @@ Current options:
 Finding non-JavaScript (ex: Sass and Stylus) dependencies:
 
 ```js
-var content = fs.readFileSync('styles.scss', 'utf8');
+const content = fs.readFileSync('styles.scss', 'utf8');
 
-var deps = precinct(content, { type: 'sass' });
-var deps2 = precinct(content, { type: 'stylus' });
+const deps = precinct(content, { type: 'sass' });
+const deps2 = precinct(content, { type: 'stylus' });
 ```
 
 Or, if you just want to pass in a filepath and get the dependencies:
 
 ```js
-var paperwork = require('precinct').paperwork;
+const { paperwork } = require('precinct');
 
-var deps = paperwork('myFile.js');
-var deps2 = paperwork('styles.scss');
+const deps = paperwork('myFile.js');
+const deps2 = paperwork('styles.scss');
 ```
 
 ###### `precinct.paperwork(filename, options)`

@@ -1,21 +1,23 @@
-var getModuleType = require('module-definition');
-var debug = require('debug')('precinct');
-var Walker = require('node-source-walk');
+'use strict';
 
-var detectiveCjs = require('detective-cjs');
-var detectiveAmd = require('detective-amd');
-var detectiveEs6 = require('detective-es6');
-var detectiveLess = require('detective-less');
-var detectivePostcss = require('detective-postcss');
-var detectiveSass = require('detective-sass');
-var detectiveScss = require('detective-scss');
-var detectiveStylus = require('detective-stylus');
-var detectiveTypeScript = require('detective-typescript');
+const fs = require('fs');
+const path = require('path');
 
-var fs = require('fs');
-var path = require('path');
+const debug = require('debug')('precinct');
+const getModuleType = require('module-definition');
+const Walker = require('node-source-walk');
 
-var natives = process.binding('natives');
+const detectiveAmd = require('detective-amd');
+const detectiveCjs = require('detective-cjs');
+const detectiveEs6 = require('detective-es6');
+const detectiveLess = require('detective-less');
+const detectivePostcss = require('detective-postcss');
+const detectiveSass = require('detective-sass');
+const detectiveScss = require('detective-scss');
+const detectiveStylus = require('detective-stylus');
+const detectiveTypeScript = require('detective-typescript');
+
+const natives = process.binding('natives');
 
 /**
  * Finds the list of dependencies for the given file
@@ -26,9 +28,9 @@ var natives = process.binding('natives');
  * @return {String[]}
  */
 function precinct(content, options = {}) {
-  var dependencies = [];
-  var ast;
-  var type = options.type;
+  let dependencies = [];
+  let ast;
+  let type = options.type;
 
   // Legacy form backCompat where type was the second parameter
   if (typeof options === 'string') {
@@ -36,22 +38,22 @@ function precinct(content, options = {}) {
     options = {};
   }
 
-  debug('options given: ', options);
+  debug('options given: %o', options);
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
     debug('we assume this is JS');
-    var walker = new Walker();
+    const walker = new Walker();
 
     try {
       // Parse once and distribute the AST to all detectives
       ast = walker.parse(content);
       debug('parsed the file content into an ast');
       precinct.ast = ast;
-    } catch (e) {
+    } catch (error) {
       // In case a previous call had it populated
       precinct.ast = null;
-      debug('could not parse content: %s', e.message);
+      debug('could not parse content: %s', error.message);
       return dependencies;
     }
   // SASS files shouldn't be parsed by Acorn
@@ -64,10 +66,10 @@ function precinct(content, options = {}) {
   }
 
   type = type || getModuleType.fromSource(ast);
-  debug('module type: ', type);
+  debug('module type: %s', type);
 
-  var theDetective;
-  var mixedMode = options.es6 && options.es6.mixedImports;
+  let theDetective;
+  const mixedMode = options.es6 && options.es6.mixedImports;
 
   switch (type) {
     case 'cjs':
@@ -108,7 +110,7 @@ function precinct(content, options = {}) {
   if (theDetective) {
     dependencies = theDetective(ast, options[type]);
   } else {
-    debug('no detective found for: ' + type);
+    debug('no detective found for: %s', type);
   }
 
   // For non-JS files that we don't parse
@@ -132,15 +134,16 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
  * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
  * @return {String[]}
  */
-precinct.paperwork = function(filename, options = {}) {
-  options = Object.assign({
-    includeCore: true
-  }, options);
+precinct.paperwork = (filename, options = {}) => {
+  options = {
+    includeCore: true,
+    ...options
+  };
 
-  var fileSystem = options.fileSystem || fs;
-  var content =  fileSystem.readFileSync(filename, 'utf8');
-  var ext = path.extname(filename);
-  var type;
+  const fileSystem = options.fileSystem || fs;
+  const content = fileSystem.readFileSync(filename, 'utf8');
+  const ext = path.extname(filename);
+  let type;
 
   if (ext === '.styl') {
     debug('paperwork: converting .styl into the stylus type');
@@ -162,15 +165,10 @@ precinct.paperwork = function(filename, options = {}) {
   }
 
   debug('paperwork: invoking precinct');
-  var deps = precinct(content, options);
+  const deps = precinct(content, options);
 
   if (!options.includeCore) {
-    return deps.filter(function(d) {
-      if (d.startsWith('node:')) {
-        return false;
-      }
-      return !natives[d];
-    });
+    return deps.filter((dep) => dep.startsWith('node:') ? false : !natives[dep]);
   }
 
   debug('paperwork: got these results\n', deps);
