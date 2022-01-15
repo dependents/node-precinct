@@ -4,7 +4,9 @@
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
-    "test": "jscs index.js test/index.js && mocha test/index.js"
+    "lint": "jscs index.js test/index.js",
+    "mocha": "mocha test/index.js",
+    "test": "npm run lint && npm run mocha"
   },
   "bin": {
     "precinct": "bin/cli.js"
