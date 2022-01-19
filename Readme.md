@@ -1,4 +1,4 @@
-### Precinct [![npm](http://img.shields.io/npm/v/precinct.svg)](https://npmjs.org/package/precinct) [![npm](http://img.shields.io/npm/dm/precinct.svg)](https://npmjs.org/package/precinct)
+### Precinct [![CI](https://github.com/dependents/node-precinct/actions/workflows/ci.yml/badge.svg)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml) [![npm](http://img.shields.io/npm/dm/precinct.svg)](https://npmjs.org/package/precinct)
 
 > Unleash the detectives
 
