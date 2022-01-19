@@ -5,11 +5,11 @@ const fs = require('fs');
 const path = require('path');
 const rewire = require('rewire');
 const sinon = require('sinon');
-const ast = require('./exampleAST');
+const ast = require('./fixtures/exampleAST');
 const precinct = rewire('../index.js');
 
 function read(filename) {
-  return fs.readFileSync(path.join(__dirname, filename), 'utf8');
+  return fs.readFileSync(path.join(__dirname, 'fixtures', filename), 'utf8');
 }
 
 describe('node-precinct', function() {
@@ -162,7 +162,7 @@ describe('node-precinct', function() {
 
   describe('paperwork', function() {
     it('grabs dependencies of jsx files', function() {
-      const result = precinct.paperwork(__dirname + '/module.jsx');
+      const result = precinct.paperwork(__dirname + '/fixtures/module.jsx');
       const expected = ['./es6NoImport'];
 
       assert.deepEqual(result, expected);
@@ -185,10 +185,10 @@ describe('node-precinct', function() {
     });
 
     it('returns the dependencies for the given filepath', function() {
-      assert.ok(precinct.paperwork(__dirname + '/es6.js').length);
-      assert.ok(precinct.paperwork(__dirname + '/styles.scss').length);
-      assert.ok(precinct.paperwork(__dirname + '/typescript.ts').length);
-      assert.ok(precinct.paperwork(__dirname + '/styles.css').length);
+      assert.ok(precinct.paperwork(__dirname + '/fixtures/es6.js').length);
+      assert.ok(precinct.paperwork(__dirname + '/fixtures/styles.scss').length);
+      assert.ok(precinct.paperwork(__dirname + '/fixtures/typescript.ts').length);
+      assert.ok(precinct.paperwork(__dirname + '/fixtures/styles.css').length);
     });
 
     it('throws if the file cannot be found', function() {
@@ -198,7 +198,7 @@ describe('node-precinct', function() {
     });
 
     it('filters out core modules if options.includeCore is false', function() {
-      const deps = precinct.paperwork(__dirname + '/coreModules.js', {
+      const deps = precinct.paperwork(__dirname + '/fixtures/coreModules.js', {
         includeCore: false
       });
 
@@ -206,13 +206,13 @@ describe('node-precinct', function() {
     });
 
     it('handles cjs files as commonjs', function() {
-      const deps = precinct.paperwork(__dirname + '/commonjs.cjs');
+      const deps = precinct.paperwork(__dirname + '/fixtures/commonjs.cjs');
       assert(deps.includes('./a'));
       assert(deps.includes('./b'));
     });
 
     it('does not filter out core modules by default', function() {
-      const deps = precinct.paperwork(__dirname + '/coreModules.js');
+      const deps = precinct.paperwork(__dirname + '/fixtures/coreModules.js');
       assert(deps.length);
     });
 
@@ -225,7 +225,7 @@ describe('node-precinct', function() {
         }
       };
 
-      const deps = precinct.paperwork(__dirname + '/amd.js', {
+      const deps = precinct.paperwork(__dirname + '/fixtures/amd.js', {
         includeCore: false,
         amd: config.amd
       });
@@ -239,7 +239,7 @@ describe('node-precinct', function() {
         const stub = sinon.stub().returns([]);
         const revert = precinct.__set__('precinct', stub);
 
-        const deps = precinct.paperwork(__dirname + '/amd.js', {
+        const deps = precinct.paperwork(__dirname + '/fixtures/amd.js', {
           amd: {
             skipLazyLoaded: true
           }
@@ -342,7 +342,7 @@ describe('node-precinct', function() {
 
     describe('that imports node-internal with node:-prefix', () => {
       it('assumes that it exists', () => {
-        const deps = precinct.paperwork(path.join(__dirname, 'internalNodePrefix.js'), {
+        const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'internalNodePrefix.js'), {
           includeCore: false
         });
         assert(!deps.includes('node:nonexistant'));
