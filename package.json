@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mrjoelkemp/node-precinct.git"
+    "url": "git@github.com:dependents/node-precinct.git"
   },
   "keywords": [
     "modules",
@@ -26,7 +26,7 @@
   "author": "Joel Kemp <joel@mrjoelkemp.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mrjoelkemp/node-precinct/issues"
+    "url": "https://github.com/dependents/node-precinct/issues"
   },
   "engines": {
     "node": "^10.13 || ^12 || >=14"
@@ -35,7 +35,7 @@
     "bin/cli.js",
     "index.js"
   ],
-  "homepage": "https://github.com/mrjoelkemp/node-precinct",
+  "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
     "commander": "^2.20.3",
     "debug": "^4.3.1",
