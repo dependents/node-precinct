@@ -26,12 +26,12 @@
   "author": "Joel Kemp <joel@mrjoelkemp.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dependents/issues"
+    "url": "https://github.com/dependents/node-precinct/issues"
   },
   "engines": {
     "node": "^10.13 || ^12 || >=14"
   },
-  "homepage": "https://github.com/dependents",
+  "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
     "commander": "^2.20.3",
     "debug": "^4.3.1",
