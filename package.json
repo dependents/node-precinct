@@ -4,7 +4,7 @@
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
-    "lint": "jscs index.js test/index.js",
+    "lint": "eslint index.js test/index.js",
     "mocha": "mocha test/index.js",
     "test": "npm run lint && npm run mocha"
   },
@@ -54,8 +54,7 @@
     "node-source-walk": "^4.2.2"
   },
   "devDependencies": {
-    "jscs": "^3.0.7",
-    "jscs-preset-mrjoelkemp": "^2.0.0",
+    "eslint": "^8.9.0",
     "mocha": "^9.2.1",
     "rewire": "^6.0.0",
     "sinon": "^13.0.1"
