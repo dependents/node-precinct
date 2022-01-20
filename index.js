@@ -105,6 +105,8 @@ function precinct(content, options = {}) {
     case 'tsx':
       theDetective = detectiveTypeScript.tsx;
       break;
+    default:
+      //nothing
   }
 
   if (theDetective) {
