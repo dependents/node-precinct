@@ -2,8 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
+const { debuglog } = require('util');
 
-const debug = require('debug')('precinct');
 const getModuleType = require('module-definition');
 const Walker = require('node-source-walk');
 
@@ -17,6 +17,7 @@ const detectiveScss = require('detective-scss');
 const detectiveStylus = require('detective-stylus');
 const detectiveTypeScript = require('detective-typescript');
 
+const debug = debuglog('precinct');
 const natives = process.binding('natives');
 
 /**
