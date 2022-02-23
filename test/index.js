@@ -31,12 +31,12 @@ describe('node-precinct', () => {
   });
 
   it('dangles off the parsed ast from a scss detective', () => {
-    precinct(read('styles.scss'), 'scss');
+    precinct(read('styles.scss'), { type: 'scss' });
     assert.notDeepEqual(precinct.ast, {});
   });
 
   it('dangles off the parsed ast from a sass detective', () => {
-    precinct(read('styles.sass'), 'sass');
+    precinct(read('styles.sass'), { type: 'sass' });
     assert.notDeepEqual(precinct.ast, {});
   });
 
@@ -78,43 +78,43 @@ describe('node-precinct', () => {
   });
 
   it('grabs dependencies of css files', () => {
-    const css = precinct(read('styles.css'), 'css');
+    const css = precinct(read('styles.css'), { type: 'css' });
     assert.deepEqual(css, ['foo.css', 'baz.css', 'bla.css', 'another.css']);
   });
 
   it('grabs dependencies of scss files', () => {
-    const scss = precinct(read('styles.scss'), 'scss');
+    const scss = precinct(read('styles.scss'), { type: 'scss' });
     assert.deepEqual(scss, ['_foo', 'baz.scss']);
   });
 
   it('grabs dependencies of sass files', () => {
-    const sass = precinct(read('styles.sass'), 'sass');
+    const sass = precinct(read('styles.sass'), { type: 'sass' });
     assert.deepEqual(sass, ['_foo']);
   });
 
   it('grabs dependencies of stylus files', () => {
-    const result = precinct(read('styles.styl'), 'stylus');
+    const result = precinct(read('styles.styl'), { type: 'stylus' });
     const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
 
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of less files', () => {
-    const result = precinct(read('styles.less'), 'less');
+    const result = precinct(read('styles.less'), { type: 'less' });
     const expected = ['_foo', '_bar.css', 'baz.less'];
 
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of typescript files', () => {
-    const result = precinct(read('typescript.ts'), 'ts');
+    const result = precinct(read('typescript.ts'), { type: 'ts' });
     const expected = ['fs', 'lib', './bar', './my-module.js', './ZipCodeValidator'];
 
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of typescript tsx files', () => {
-    const result = precinct(read('module.tsx'), 'tsx');
+    const result = precinct(read('module.tsx'), { type: 'tsx' });
     const expected = ['./none'];
 
     assert.deepEqual(result, expected);
@@ -126,7 +126,7 @@ describe('node-precinct', () => {
   });
 
   it('supports the object form of type configuration', () => {
-    const result = precinct(read('styles.styl'), {type: 'stylus'});
+    const result = precinct(read('styles.styl'), { type: 'stylus' });
     const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
 
     assert.deepEqual(result, expected);

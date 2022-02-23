@@ -35,7 +35,8 @@ Example call:
 precinct(content, {
   amd: {
     skipLazyLoaded: true
-  }
+  },
+  type: 'amd'
 });
 ```
 

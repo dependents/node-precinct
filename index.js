@@ -29,17 +29,11 @@ const natives = process.binding('natives');
  * @return {String[]}
  */
 function precinct(content, options = {}) {
+  debug('options given: %o', options);
+
   let dependencies = [];
   let ast;
   let type = options.type;
-
-  // Legacy form backCompat where type was the second parameter
-  if (typeof options === 'string') {
-    type = options;
-    options = {};
-  }
-
-  debug('options given: %o', options);
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
