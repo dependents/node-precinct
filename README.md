@@ -1,9 +1,9 @@
-### Precinct [![CI](https://github.com/dependents/node-precinct/actions/workflows/ci.yml/badge.svg)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml) [![npm](http://img.shields.io/npm/dm/precinct.svg)](https://npmjs.org/package/precinct)
+### precinct [![CI](https://img.shields.io/github/workflow/status/dependents/node-precinct/CI/main?label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain) [![npm version](https://img.shields.io/npm/v/precinct)](https://www.npmjs.com/package/precinct) [![npm downloads](http://img.shields.io/npm/dm/precinct.svg)](https://npmjs.org/package/precinct)
 
 > Unleash the detectives
 
 ```sh
-npm install --save precinct
+npm install precinct
 ```
 
 Uses the appropriate detective to find the dependencies of a file or its AST.
@@ -12,7 +12,7 @@ Supports:
 
 * JavaScript modules: AMD, CommonJS, and ES6.
 * Typescript
-* CSS Preprocessors: Sass, Stylus, and Less
+* CSS Preprocessors: Sass, Scss, Stylus, and Less
 * CSS (PostCSS)
 
 ### Usage
@@ -46,7 +46,7 @@ Current options:
 
 * `amd.skipLazyLoaded`: tells the AMD detective to omit lazy-loaded dependencies (i.e., inner requires).
 * `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
-  - Note: This will work for any file format that contains an ES6 import.
+  * Note: This will work for any file format that contains an ES6 import.
 * `css.url`: tells the CSS detective to include `url()` references to images, fonts, etc.
 
 Finding non-JavaScript (ex: Sass and Stylus) dependencies:
@@ -80,7 +80,9 @@ Supported options:
 
 *Assumes a global install of `npm install -g precinct`*
 
-`precinct [options] path/to/file`
+```sh
+precinct [options] path/to/file
+```
 
 * Run `precinct --help` to see the options
 
