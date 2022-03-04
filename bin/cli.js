@@ -17,7 +17,7 @@ program
 const cliOptions = program.opts();
 const options = {
   es6: {
-    mixedImports: cliOptions.es6MixedImports
+    mixedImports: Boolean(cliOptions.es6MixedImports)
   },
   type: cliOptions.type
 };
