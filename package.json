@@ -40,23 +40,23 @@
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
-    "commander": "^9.0.0",
-    "detective-amd": "^3.1.2",
-    "detective-cjs": "^3.1.3",
-    "detective-es6": "^2.2.2",
+    "commander": "^9.1.0",
+    "detective-amd": "^4.0.1",
+    "detective-cjs": "^4.0.0",
+    "detective-es6": "^3.0.0",
     "detective-less": "^1.0.2",
-    "detective-postcss": "^5.0.0",
-    "detective-sass": "^3.0.2",
-    "detective-scss": "^2.0.2",
+    "detective-postcss": "^6.0.1",
+    "detective-sass": "^4.0.1",
+    "detective-scss": "^3.0.0",
     "detective-stylus": "^2.0.0",
-    "detective-typescript": "^8.0.1",
-    "module-definition": "^3.4.0",
-    "node-source-walk": "^4.3.0"
+    "detective-typescript": "^9.0.0",
+    "module-definition": "^4.0.0",
+    "node-source-walk": "^5.0.0"
   },
   "devDependencies": {
     "c8": "^7.11.0",
-    "eslint": "^8.10.0",
-    "mocha": "^9.2.1",
+    "eslint": "^8.11.0",
+    "mocha": "^9.2.2",
     "rewire": "^6.0.0",
     "sinon": "^13.0.1"
   }
