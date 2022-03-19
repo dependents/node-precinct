@@ -101,7 +101,7 @@ function precinct(content, options = {}) {
       theDetective = detectiveTypeScript.tsx;
       break;
     default:
-      //nothing
+      // nothing
   }
 
   if (theDetective) {
@@ -132,10 +132,7 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
  * @return {String[]}
  */
 precinct.paperwork = (filename, options = {}) => {
-  options = {
-    includeCore: true,
-    ...options
-  };
+  options = { includeCore: true, ...options };
 
   const fileSystem = options.fileSystem || fs;
   const content = fileSystem.readFileSync(filename, 'utf8');
@@ -148,10 +145,9 @@ precinct.paperwork = (filename, options = {}) => {
   } else if (ext === '.cjs') {
     debug('paperwork: converting .cjs into the commonjs type');
     type = 'commonjs';
-  }
   // We need to sniff the JS module to find its type, not by extension
   // Other possible types pass through normally
-  else if (ext !== '.js' && ext !== '.jsx') {
+  } else if (ext !== '.js' && ext !== '.jsx') {
     debug('paperwork: stripping the dot from the extension to serve as the type');
     type = ext.replace('.', '');
   }
