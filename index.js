@@ -161,7 +161,18 @@ precinct.paperwork = (filename, options = {}) => {
   const deps = precinct(content, options);
 
   if (!options.includeCore) {
-    return deps.filter((dep) => dep.startsWith('node:') ? false : !natives[dep]);
+    return deps.filter((dep) => {
+      if (dep.startsWith('node:')) {
+        return false
+      }
+
+      if (["test"].includes(dep)) { // some builtins can only be access via node: prefix
+        return true
+      }
+
+      const isInNatives = Boolean(natives[dep]);
+      return !isInNatives;
+    });
   }
 
   debug('paperwork: got these results\n', deps);
