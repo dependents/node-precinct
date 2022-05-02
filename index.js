@@ -166,7 +166,7 @@ precinct.paperwork = (filename, options = {}) => {
         return false
       }
 
-      if (["test"].includes(dep)) { // some builtins can only be access via node: prefix
+      if (["test"].includes(dep)) { // some builtins can only be accessed via node: prefix
         return true
       }
 
