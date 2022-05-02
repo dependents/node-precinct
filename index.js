@@ -166,7 +166,11 @@ precinct.paperwork = (filename, options = {}) => {
         return false
       }
 
-      if (["test"].includes(dep)) { // some builtins can only be access via node: prefix
+      // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
+      // can only be imported by "node:test." We're correcting this so "test" isn't 
+      // unnecessarily stripped from the imports
+      if ("test" == dep) { 
+        debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
         return true
       }
 
