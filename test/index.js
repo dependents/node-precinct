@@ -349,7 +349,7 @@ describe('node-precinct', () => {
         assert.deepEqual(deps, ['streams']);
       });
 
-      it("understands quirks around somem modules only being addressable via node: prefix", () => {
+      it("understands quirks around some modules only being addressable via node: prefix", () => {
         const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'requiretest.js'), {
           includeCore: false
         });
