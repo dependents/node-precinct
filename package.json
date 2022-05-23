@@ -45,7 +45,7 @@
     "detective-cjs": "^4.0.0",
     "detective-es6": "^3.0.0",
     "detective-less": "^1.0.2",
-    "detective-postcss": "^6.0.1",
+    "detective-postcss": "^6.1.0",
     "detective-sass": "^4.0.1",
     "detective-scss": "^3.0.0",
     "detective-stylus": "^2.0.0",
