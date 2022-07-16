@@ -162,19 +162,22 @@ precinct.paperwork = (filename, options = {}) => {
 
   if (!options.includeCore) {
     return deps.filter((dep) => {
-      if (dep.startsWith('node:')) {
+      // If `identifiers: true` was passed, we'll get results objects with `path`, otherwise strings.
+      const depPath = dep.path || dep;
+
+      if (depPath.startsWith('node:')) {
         return false
       }
 
       // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
       // can only be imported by "node:test." We're correcting this so "test" isn't 
       // unnecessarily stripped from the imports
-      if ("test" == dep) { 
+      if ("test" == depPath) {
         debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
         return true
       }
 
-      const isInNatives = Boolean(natives[dep]);
+      const isInNatives = Boolean(natives[depPath]);
       return !isInNatives;
     });
   }
