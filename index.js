@@ -16,6 +16,7 @@ const detectiveSass = require('detective-sass');
 const detectiveScss = require('detective-scss');
 const detectiveStylus = require('detective-stylus');
 const detectiveTypeScript = require('detective-typescript');
+const detectiveVue = require('detective-vue2');
 
 const debug = debuglog('precinct');
 const natives = process.binding('natives');
@@ -100,6 +101,9 @@ function precinct(content, options = {}) {
     case 'tsx':
       theDetective = detectiveTypeScript.tsx;
       break;
+    case 'vue':
+      theDetective = detectiveVue;
+      break;
     default:
       // nothing
   }
@@ -167,9 +171,9 @@ precinct.paperwork = (filename, options = {}) => {
       }
 
       // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
-      // can only be imported by "node:test." We're correcting this so "test" isn't 
+      // can only be imported by "node:test." We're correcting this so "test" isn't
       // unnecessarily stripped from the imports
-      if ("test" == dep) { 
+      if ("test" == dep) {
         debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
         return true
       }

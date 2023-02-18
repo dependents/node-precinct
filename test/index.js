@@ -295,6 +295,16 @@ describe('node-precinct', () => {
     });
   });
 
+  describe('when given vue file', () => {
+    it('grabs script and style dependencies', () => {
+      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures', 'ts.vue'));
+
+      assert.equal(vueFile[0], './typescript');
+      assert.equal(vueFile[1], 'styles.scss');
+      assert.equal(vueFile.length, 2);
+    })
+  });
+
   describe('when lazy exported dependencies in CJS', () => {
     it('grabs those lazy dependencies', () => {
       const cjs = precinct(read('cjsExportLazy.js'));
