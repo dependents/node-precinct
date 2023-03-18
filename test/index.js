@@ -348,6 +348,13 @@ describe('node-precinct', () => {
         assert.ok(!deps.includes('node:nonexistant'));
         assert.deepEqual(deps, ['streams']);
       });
+
+      it("understands quirks around some modules only being addressable via node: prefix", () => {
+        const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'requiretest.js'), {
+          includeCore: false
+        });
+        assert.deepEqual(deps, ['test']);
+      })
     });
 
     describe('that uses dynamic imports', () => {

@@ -1,11 +1,12 @@
 {
   "name": "precinct",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "Unleash the detectives",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js test/index.js",
-    "mocha": "mocha test/index.js",
+    "lint": "eslint index.js \"test/*.js\"",
+    "fix": "npm run lint -- --fix",
+    "mocha": "mocha",
     "test": "npm run lint && npm run mocha",
     "test:ci": "c8 npm run mocha"
   },
@@ -14,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dependents/node-precinct.git"
+    "url": "git+https://github.com/dependents/node-precinct.git"
   },
   "keywords": [
     "modules",
@@ -40,24 +41,24 @@
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
-    "commander": "^9.1.0",
+    "commander": "^9.5.0",
     "detective-amd": "^4.0.1",
     "detective-cjs": "^4.0.0",
     "detective-es6": "^3.0.0",
     "detective-less": "^1.0.2",
-    "detective-postcss": "^6.0.1",
-    "detective-sass": "^4.0.1",
+    "detective-postcss": "^6.1.0",
+    "detective-sass": "^4.1.0",
     "detective-scss": "^3.0.0",
-    "detective-stylus": "^2.0.0",
+    "detective-stylus": "^2.0.1",
     "detective-typescript": "^9.0.0",
     "module-definition": "^4.0.0",
     "node-source-walk": "^5.0.0"
   },
   "devDependencies": {
-    "c8": "^7.11.0",
-    "eslint": "^8.11.0",
+    "c8": "^7.13.0",
+    "eslint": "^8.36.0",
     "mocha": "^9.2.2",
     "rewire": "^6.0.0",
-    "sinon": "^13.0.1"
+    "sinon": "^13.0.2"
   }
 }

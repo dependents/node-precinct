@@ -161,7 +161,22 @@ precinct.paperwork = (filename, options = {}) => {
   const deps = precinct(content, options);
 
   if (!options.includeCore) {
-    return deps.filter((dep) => dep.startsWith('node:') ? false : !natives[dep]);
+    return deps.filter((dep) => {
+      if (dep.startsWith('node:')) {
+        return false
+      }
+
+      // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
+      // can only be imported by "node:test." We're correcting this so "test" isn't 
+      // unnecessarily stripped from the imports
+      if ("test" == dep) { 
+        debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
+        return true
+      }
+
+      const isInNatives = Boolean(natives[dep]);
+      return !isInNatives;
+    });
   }
 
   debug('paperwork: got these results\n', deps);
