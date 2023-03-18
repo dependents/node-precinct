@@ -2,5 +2,6 @@
   "check-leaks": true,
   "throw-deprecation": true,
   "trace-deprecation": true,
-  "trace-warnings": true
+  "trace-warnings": true,
+  "use-strict": true
 }

@@ -41,11 +41,11 @@
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
+    "@dependents/detective-less": "^3.0.1",
     "commander": "^9.5.0",
     "detective-amd": "^4.0.1",
     "detective-cjs": "^4.0.0",
     "detective-es6": "^3.0.0",
-    "detective-less": "^1.0.2",
     "detective-postcss": "^6.1.0",
     "detective-sass": "^4.1.0",
     "detective-scss": "^3.0.0",
