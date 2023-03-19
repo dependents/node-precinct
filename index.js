@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 const { debuglog } = require('util');
 
 const getModuleType = require('module-definition');
@@ -18,6 +19,7 @@ const detectiveStylus = require('detective-stylus');
 const detectiveTypeScript = require('detective-typescript');
 
 const debug = debuglog('precinct');
+// eslint-disable-next-line n/no-deprecated-api
 const natives = process.binding('natives');
 
 /**
@@ -33,7 +35,7 @@ function precinct(content, options = {}) {
 
   let dependencies = [];
   let ast;
-  let type = options.type;
+  let { type } = options;
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
