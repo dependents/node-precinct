@@ -119,7 +119,10 @@ function precinct(content, options = {}) {
 }
 
 function detectiveEs6Cjs(ast, detectiveOptions) {
-  return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
+  return [
+    ...detectiveEs6(ast, detectiveOptions),
+    ...detectiveCjs(ast, detectiveOptions)
+  ];
 }
 
 /**
@@ -161,17 +164,15 @@ precinct.paperwork = (filename, options = {}) => {
   const dependencies = precinct(content, options);
 
   if (!options.includeCore) {
-    return dependencies.filter((dependency) => {
-      if (dependency.startsWith('node:')) {
-        return false
-      }
+    return dependencies.filter(dependency => {
+      if (dependency.startsWith('node:')) return false;
 
-      // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
+      // In Node.js 18, node:test is a builtin but shows up under natives["test"], but
       // can only be imported by "node:test." We're correcting this so "test" isn't
       // unnecessarily stripped from the imports
       if (dependency === 'test') {
         debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
-        return true
+        return true;
       }
 
       return !natives[dependency];

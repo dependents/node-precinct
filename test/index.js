@@ -7,7 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const rewire = require('rewire');
 const sinon = require('sinon');
-const ast = require('./fixtures/exampleAST');
+const ast = require('./fixtures/exampleAST.js');
+
 const precinct = rewire('../index.js');
 
 function read(filename) {
@@ -42,33 +43,33 @@ describe('node-precinct', () => {
 
   it('grabs dependencies of amd modules', () => {
     const amd = precinct(read('amd.js'));
-    assert.ok(amd.includes('./a'));
-    assert.ok(amd.includes('./b'));
+    assert.equal(amd.includes('./a'), true);
+    assert.equal(amd.includes('./b'), true);
     assert.equal(amd.length, 2);
   });
 
   it('grabs dependencies of commonjs modules', () => {
     const cjs = precinct(read('commonjs.js'));
-    assert.ok(cjs.includes('./a'));
-    assert.ok(cjs.includes('./b'));
+    assert.equal(cjs.includes('./a'), true);
+    assert.equal(cjs.includes('./b'), true);
     assert.equal(cjs.length, 2);
   });
 
   it('grabs dependencies of es6 modules', () => {
     const cjs = precinct(read('es6.js'));
-    assert.ok(cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), true);
     assert.equal(cjs.length, 1);
   });
 
   it('grabs dependencies of es6 modules with embedded jsx', () => {
     const cjs = precinct(read('jsx.js'));
-    assert.ok(cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), true);
     assert.equal(cjs.length, 1);
   });
 
   it('grabs dependencies of es6 modules with embedded es7', () => {
     const cjs = precinct(read('es7.js'));
-    assert.ok(cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), true);
     assert.equal(cjs.length, 1);
   });
 
@@ -145,7 +146,7 @@ describe('node-precinct', () => {
   it('ignores unparsable .js files', () => {
     const cjs = precinct(read('unparseable.js'));
 
-    assert.ok(!cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), false);
     assert.equal(cjs.length, 0);
   });
 
@@ -163,7 +164,7 @@ describe('node-precinct', () => {
 
   describe('paperwork', () => {
     it('grabs dependencies of jsx files', () => {
-      const result = precinct.paperwork(`${__dirname}/fixtures/module.jsx`);
+      const result = precinct.paperwork(path.join(__dirname, '/fixtures/module.jsx'));
       const expected = ['./es6NoImport'];
 
       assert.deepEqual(result, expected);
@@ -186,10 +187,10 @@ describe('node-precinct', () => {
     });
 
     it('returns the dependencies for the given filepath', () => {
-      assert.notEqual(precinct.paperwork(`${__dirname}/fixtures/es6.js`).length, 0);
-      assert.notEqual(precinct.paperwork(`${__dirname}/fixtures/styles.scss`).length, 0);
-      assert.notEqual(precinct.paperwork(`${__dirname}/fixtures/typescript.ts`).length, 0);
-      assert.notEqual(precinct.paperwork(`${__dirname}/fixtures/styles.css`).length, 0);
+      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/es6.js')).length, 0);
+      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/styles.scss')).length, 0);
+      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/typescript.ts')).length, 0);
+      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/styles.css')).length, 0);
     });
 
     it('throws if the file cannot be found', () => {
@@ -199,7 +200,7 @@ describe('node-precinct', () => {
     });
 
     it('filters out core modules if options.includeCore is false', () => {
-      const deps = precinct.paperwork(`${__dirname}/fixtures/coreModules.js`, {
+      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/coreModules.js'), {
         includeCore: false
       });
 
@@ -207,13 +208,13 @@ describe('node-precinct', () => {
     });
 
     it('handles cjs files as commonjs', () => {
-      const deps = precinct.paperwork(`${__dirname}/fixtures/commonjs.cjs`);
-      assert.ok(deps.includes('./a'));
-      assert.ok(deps.includes('./b'));
+      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/commonjs.cjs'));
+      assert.equal(deps.includes('./a'), true);
+      assert.equal(deps.includes('./b'), true);
     });
 
     it('does not filter out core modules by default', () => {
-      const deps = precinct.paperwork(`${__dirname}/fixtures/coreModules.js`);
+      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/coreModules.js'));
       assert.notEqual(deps.length, 0);
     });
 
@@ -226,7 +227,7 @@ describe('node-precinct', () => {
         }
       };
 
-      precinct.paperwork(`${__dirname}/fixtures/amd.js`, {
+      precinct.paperwork(path.join(__dirname, '/fixtures/amd.js'), {
         includeCore: false,
         amd: config.amd
       });
@@ -240,7 +241,7 @@ describe('node-precinct', () => {
         const stub = sinon.stub().returns([]);
         const revert = precinct.__set__('precinct', stub);
 
-        precinct.paperwork(`${__dirname}/fixtures/amd.js`, {
+        precinct.paperwork(path.join(__dirname, '/fixtures/amd.js'), {
           amd: {
             skipLazyLoaded: true
           }
@@ -345,16 +346,16 @@ describe('node-precinct', () => {
         const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'internalNodePrefix.js'), {
           includeCore: false
         });
-        assert.ok(!deps.includes('node:nonexistant'));
+        assert.equal(deps.includes('node:nonexistant'), false);
         assert.deepEqual(deps, ['streams']);
       });
 
-      it("understands quirks around some modules only being addressable via node: prefix", () => {
+      it('understands quirks around some modules only being addressable via node: prefix', () => {
         const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'requiretest.js'), {
           includeCore: false
         });
         assert.deepEqual(deps, ['test']);
-      })
+      });
     });
 
     describe('that uses dynamic imports', () => {
@@ -367,13 +368,13 @@ describe('node-precinct', () => {
 
   it('handles the esm extension', () => {
     const cjs = precinct(read('es6.esm'));
-    assert.ok(cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), true);
     assert.equal(cjs.length, 1);
   });
 
   it('handles the mjs extension', () => {
     const cjs = precinct(read('es6.mjs'));
-    assert.ok(cjs.includes('lib'));
+    assert.equal(cjs.includes('lib'), true);
     assert.equal(cjs.length, 1);
   });
 });
