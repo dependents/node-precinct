@@ -65,56 +65,56 @@ function precinct(content, options = {}) {
   type = type || getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
-  let theDetective;
+  let detective;
   const mixedMode = options.es6 && options.es6.mixedImports;
 
   switch (type) {
     case 'cjs':
     case 'commonjs':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
+      detective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
       break;
     case 'css':
-      theDetective = detectivePostcss;
+      detective = detectivePostcss;
       break;
     case 'amd':
-      theDetective = detectiveAmd;
+      detective = detectiveAmd;
       break;
     case 'mjs':
     case 'esm':
     case 'es6':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
+      detective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
       break;
     case 'sass':
-      theDetective = detectiveSass;
+      detective = detectiveSass;
       break;
     case 'less':
-      theDetective = detectiveLess;
+      detective = detectiveLess;
       break;
     case 'scss':
-      theDetective = detectiveScss;
+      detective = detectiveScss;
       break;
     case 'stylus':
-      theDetective = detectiveStylus;
+      detective = detectiveStylus;
       break;
     case 'ts':
-      theDetective = detectiveTypeScript;
+      detective = detectiveTypeScript;
       break;
     case 'tsx':
-      theDetective = detectiveTypeScript.tsx;
+      detective = detectiveTypeScript.tsx;
       break;
     default:
       // nothing
   }
 
-  if (theDetective) {
-    dependencies = theDetective(ast, options[type]);
+  if (detective) {
+    dependencies = detective(ast, options[type]);
   } else {
     debug('no detective found for: %s', type);
   }
 
   // For non-JS files that we don't parse
-  if (theDetective && theDetective.ast) {
-    precinct.ast = theDetective.ast;
+  if (detective && detective.ast) {
+    precinct.ast = detective.ast;
   }
 
   return dependencies;
@@ -169,9 +169,9 @@ precinct.paperwork = (filename, options = {}) => {
     return dependencies.filter(dependency => {
       if (dependency.startsWith('node:')) return false;
 
-      // In Node.js 18, node:test is a builtin but shows up under natives["test"], but
-      // can only be imported by "node:test." We're correcting this so "test" isn't
-      // unnecessarily stripped from the imports
+      // In Node.js 18, node:test is a builtin but shows up under natives["test"],
+      // but can only be imported by "node:test." We're correcting this so "test"
+      // isn't unnecessarily stripped from the imports
       if (dependency === 'test') {
         debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
         return true;
