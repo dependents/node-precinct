@@ -1,4 +1,4 @@
-### precinct [![CI](https://img.shields.io/github/actions/workflow/status/dependents/node-precinct/ci.yml?branch=main&label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain) [![npm version](https://img.shields.io/npm/v/precinct)](https://www.npmjs.com/package/precinct) [![npm downloads](http://img.shields.io/npm/dm/precinct.svg)](https://npmjs.org/package/precinct)
+# precinct [![CI](https://img.shields.io/github/actions/workflow/status/dependents/node-precinct/ci.yml?branch=main&label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain) [![npm version](https://img.shields.io/npm/v/precinct?logo=npm&logoColor=fff)](https://www.npmjs.com/package/precinct) [![npm downloads](http://img.shields.io/npm/dm/precinct)](https://npmjs.org/package/precinct)
 
 > Unleash the detectives
 
@@ -11,7 +11,7 @@ Uses the appropriate detective to find the dependencies of a file or its AST.
 Supports:
 
 * JavaScript modules: AMD, CommonJS, and ES6.
-* Typescript
+* TypeScript
 * CSS Preprocessors: Sass, Scss, Stylus, and Less
 * CSS (PostCSS)
 
@@ -40,7 +40,7 @@ precinct(content, {
 });
 ```
 
-- The supported module type prefixes are `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`
+* The supported module type prefixes are `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`
 
 Current options:
 
@@ -55,8 +55,8 @@ Finding non-JavaScript (ex: Sass and Stylus) dependencies:
 const fs = require('fs');
 const content = fs.readFileSync('styles.scss', 'utf8');
 
-const deps = precinct(content, { type: 'sass' });
-const deps2 = precinct(content, { type: 'stylus' });
+const sassDeps = precinct(content, { type: 'sass' });
+const stylusDeps = precinct(content, { type: 'stylus' });
 ```
 
 Or, if you just want to pass in a filepath and get the dependencies:
@@ -68,7 +68,7 @@ const deps = paperwork('myFile.js');
 const deps2 = paperwork('styles.scss');
 ```
 
-###### `precinct.paperwork(filename, options)`
+#### `precinct.paperwork(filename, options)`
 
 Supported options:
 
@@ -78,14 +78,14 @@ Supported options:
 
 #### CLI
 
-*Assumes a global install of `npm install -g precinct`*
+*Assumes a global install precinct with `npm install -g precinct`*
 
 ```sh
 precinct [options] path/to/file
 ```
 
-* Run `precinct --help` to see the options
+Run `precinct --help` to see all the options.
 
 ### License
 
-MIT
+[MIT](LICENSE)
