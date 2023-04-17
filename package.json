@@ -50,13 +50,13 @@
     "detective-sass": "^4.1.1",
     "detective-scss": "^3.0.1",
     "detective-stylus": "^3.0.0",
-    "detective-typescript": "^9.1.1",
+    "detective-typescript": "^10.0.0",
     "module-definition": "^4.1.0",
     "node-source-walk": "^5.0.1"
   },
   "devDependencies": {
     "c8": "^7.13.0",
-    "eslint": "^8.36.0",
+    "eslint": "^8.38.0",
     "mocha": "^9.2.2",
     "rewire": "^6.0.0",
     "sinon": "^13.0.2",
