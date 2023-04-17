@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 const { debuglog } = require('util');
 
 const getModuleType = require('module-definition');
@@ -10,7 +11,7 @@ const Walker = require('node-source-walk');
 const detectiveAmd = require('detective-amd');
 const detectiveCjs = require('detective-cjs');
 const detectiveEs6 = require('detective-es6');
-const detectiveLess = require('detective-less');
+const detectiveLess = require('@dependents/detective-less');
 const detectivePostcss = require('detective-postcss');
 const detectiveSass = require('detective-sass');
 const detectiveScss = require('detective-scss');
@@ -18,6 +19,7 @@ const detectiveStylus = require('detective-stylus');
 const detectiveTypeScript = require('detective-typescript');
 
 const debug = debuglog('precinct');
+// eslint-disable-next-line n/no-deprecated-api
 const natives = process.binding('natives');
 
 /**
@@ -33,7 +35,7 @@ function precinct(content, options = {}) {
 
   let dependencies = [];
   let ast;
-  let type = options.type;
+  let { type } = options;
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
@@ -63,49 +65,49 @@ function precinct(content, options = {}) {
   type = type || getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
-  let theDetective;
+  let detective;
   const mixedMode = options.es6 && options.es6.mixedImports;
 
   switch (type) {
     case 'cjs':
     case 'commonjs':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
+      detective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
       break;
     case 'css':
-      theDetective = detectivePostcss;
+      detective = detectivePostcss;
       break;
     case 'amd':
-      theDetective = detectiveAmd;
+      detective = detectiveAmd;
       break;
     case 'mjs':
     case 'esm':
     case 'es6':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
+      detective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
       break;
     case 'sass':
-      theDetective = detectiveSass;
+      detective = detectiveSass;
       break;
     case 'less':
-      theDetective = detectiveLess;
+      detective = detectiveLess;
       break;
     case 'scss':
-      theDetective = detectiveScss;
+      detective = detectiveScss;
       break;
     case 'stylus':
-      theDetective = detectiveStylus;
+      detective = detectiveStylus;
       break;
     case 'ts':
-      theDetective = detectiveTypeScript;
+      detective = detectiveTypeScript;
       break;
     case 'tsx':
-      theDetective = detectiveTypeScript.tsx;
+      detective = detectiveTypeScript.tsx;
       break;
     default:
       // nothing
   }
 
-  if (theDetective) {
-    dependencies = theDetective(ast, {
+  if (detective) {
+    dependencies = detective(ast, {
       ...options[type],
       filename: options.filename,
       treePath: options.treePath,
@@ -115,15 +117,18 @@ function precinct(content, options = {}) {
   }
 
   // For non-JS files that we don't parse
-  if (theDetective && theDetective.ast) {
-    precinct.ast = theDetective.ast;
+  if (detective && detective.ast) {
+    precinct.ast = detective.ast;
   }
 
   return dependencies;
 }
 
 function detectiveEs6Cjs(ast, detectiveOptions) {
-  return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
+  return [
+    ...detectiveEs6(ast, detectiveOptions),
+    ...detectiveCjs(ast, detectiveOptions)
+  ];
 }
 
 /**
@@ -162,29 +167,26 @@ precinct.paperwork = (filename, options = {}) => {
   }
 
   debug('paperwork: invoking precinct');
-  const deps = precinct(content, options);
+  const dependencies = precinct(content, options);
 
   if (!options.includeCore) {
-    return deps.filter((dep) => {
-      if (dep.startsWith('node:')) {
-        return false
-      }
+    return dependencies.filter(dependency => {
+      if (dependency.startsWith('node:')) return false;
 
-      // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
-      // can only be imported by "node:test." We're correcting this so "test" isn't 
-      // unnecessarily stripped from the imports
-      if ("test" == dep) { 
+      // In Node.js 18, node:test is a builtin but shows up under natives["test"],
+      // but can only be imported by "node:test." We're correcting this so "test"
+      // isn't unnecessarily stripped from the imports
+      if (dependency === 'test') {
         debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
-        return true
+        return true;
       }
 
-      const isInNatives = Boolean(natives[dep]);
-      return !isInNatives;
+      return !natives[dependency];
     });
   }
 
-  debug('paperwork: got these results\n', deps);
-  return deps;
+  debug('paperwork: got these results\n', dependencies);
+  return dependencies;
 };
 
 module.exports = precinct;
