@@ -110,7 +110,7 @@ function precinct(content, options = {}) {
     dependencies = detective(ast, {
       ...options[type],
       filename: options.filename,
-      treePath: options.treePath,
+      treePath: options.treePath
     });
   } else {
     debug('no detective found for: %s', type);
