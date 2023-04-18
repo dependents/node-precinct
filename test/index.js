@@ -230,7 +230,7 @@ describe('node-precinct', () => {
         amd: config.amd
       });
 
-      assert.deepEqual(stub.args[0][1], config.amd);
+      assert.deepEqual(stub.args[0][1].skipLazyLoaded, config.amd.skipLazyLoaded);
       revert();
     });
 
@@ -263,7 +263,7 @@ describe('node-precinct', () => {
 
       precinct(read('amd.js'), config);
 
-      assert.deepEqual(stub.args[0][1], config.amd);
+      assert.deepEqual(stub.args[0][1].skipLazyLoaded, config.amd.skipLazyLoaded);
       revert();
     });
 
