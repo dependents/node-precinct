@@ -33,9 +33,9 @@ const natives = process.binding('natives');
 function precinct(content, options = {}) {
   debug('options given: %o', options);
 
+  let { type } = options;
   let dependencies = [];
   let ast;
-  let { type } = options;
 
   // We assume we're dealing with a JS file
   if (!type && typeof content !== 'object') {
@@ -150,9 +150,9 @@ precinct.paperwork = (filename, options = {}) => {
   } else if (ext === '.cjs') {
     debug('paperwork: converting .cjs into the commonjs type');
     type = 'commonjs';
-  // We need to sniff the JS module to find its type, not by extension
+  // We need to sniff the JS module to find its type, not by extension.
   // Other possible types pass through normally
-  } else if (ext !== '.js' && ext !== '.jsx') {
+  } else if (!['.js', '.jsx'].includes(ext)) {
     debug('paperwork: stripping the dot from the extension to serve as the type');
     type = ext.replace('.', '');
   }
@@ -173,7 +173,7 @@ precinct.paperwork = (filename, options = {}) => {
       // but can only be imported by "node:test." We're correcting this so "test"
       // isn't unnecessarily stripped from the imports
       if (dependency === 'test') {
-        debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
+        debug('paperwork: allowing test import to avoid builtin/natives consideration');
         return true;
       }
 
