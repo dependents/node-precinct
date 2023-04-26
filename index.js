@@ -33,12 +33,11 @@ const natives = process.binding('natives');
 function precinct(content, options = {}) {
   debug('options given: %o', options);
 
-  let { type } = options;
   let dependencies = [];
   let ast;
 
   // We assume we're dealing with a JS file
-  if (!type && typeof content !== 'object') {
+  if (!options.type && typeof content !== 'object') {
     debug('we assume this is JS');
     const walker = new Walker();
 
@@ -62,7 +61,7 @@ function precinct(content, options = {}) {
     }
   }
 
-  type = type || getModuleType.fromSource(ast);
+  const type = options.type || getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
   let detective;
