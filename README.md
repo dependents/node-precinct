@@ -1,4 +1,8 @@
-# precinct [![CI](https://img.shields.io/github/actions/workflow/status/dependents/node-precinct/ci.yml?branch=main&label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain) [![npm version](https://img.shields.io/npm/v/precinct?logo=npm&logoColor=fff)](https://www.npmjs.com/package/precinct) [![npm downloads](http://img.shields.io/npm/dm/precinct)](https://npmjs.org/package/precinct)
+# precinct
+
+[![CI](https://img.shields.io/github/actions/workflow/status/dependents/node-precinct/ci.yml?branch=main&label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain)
+[![npm version](https://img.shields.io/npm/v/precinct?logo=npm&logoColor=fff)](https://www.npmjs.com/package/precinct)
+[![npm downloads](http://img.shields.io/npm/dm/precinct)](https://www.npmjs.com/package/precinct)
 
 > Unleash the detectives
 
