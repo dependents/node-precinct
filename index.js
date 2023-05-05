@@ -4,10 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const process = require('process');
 const { debuglog } = require('util');
-
 const getModuleType = require('module-definition');
 const Walker = require('node-source-walk');
-
 const detectiveAmd = require('detective-amd');
 const detectiveCjs = require('detective-cjs');
 const detectiveEs6 = require('detective-es6');
@@ -69,38 +67,58 @@ function precinct(content, options = {}) {
 
   switch (type) {
     case 'cjs':
-    case 'commonjs':
+    case 'commonjs': {
       detective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
       break;
-    case 'css':
+    }
+
+    case 'css': {
       detective = detectivePostcss;
       break;
-    case 'amd':
+    }
+
+    case 'amd': {
       detective = detectiveAmd;
       break;
+    }
+
     case 'mjs':
     case 'esm':
-    case 'es6':
+    case 'es6': {
       detective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
       break;
-    case 'sass':
+    }
+
+    case 'sass': {
       detective = detectiveSass;
       break;
-    case 'less':
+    }
+
+    case 'less': {
       detective = detectiveLess;
       break;
-    case 'scss':
+    }
+
+    case 'scss': {
       detective = detectiveScss;
       break;
-    case 'stylus':
+    }
+
+    case 'stylus': {
       detective = detectiveStylus;
       break;
-    case 'ts':
+    }
+
+    case 'ts': {
       detective = detectiveTypeScript;
       break;
-    case 'tsx':
+    }
+
+    case 'tsx': {
       detective = detectiveTypeScript.tsx;
       break;
+    }
+
     default:
       // nothing
   }

@@ -2,12 +2,18 @@ name: Lint
 
 on:
   push:
+    branches:
+      - "**"
+      - "!dependabot/**"
   pull_request:
   workflow_dispatch:
 
 env:
   FORCE_COLOR: 2
   NODE: 18
+
+permissions:
+  contents: read
 
 jobs:
   lint:
