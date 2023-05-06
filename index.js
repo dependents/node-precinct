@@ -31,7 +31,6 @@ const natives = process.binding('natives');
 function precinct(content, options = {}) {
   debug('options given: %o', options);
 
-  let dependencies = [];
   let ast;
 
   // We assume we're dealing with a JS file
@@ -48,7 +47,7 @@ function precinct(content, options = {}) {
       // In case a previous call had it populated
       precinct.ast = null;
       debug('could not parse content: %s', error.message);
-      return dependencies;
+      return [];
     }
   // SASS files shouldn't be parsed by Acorn
   } else {
@@ -122,6 +121,8 @@ function precinct(content, options = {}) {
     default:
       // nothing
   }
+
+  let dependencies = [];
 
   if (detective) {
     dependencies = detective(ast, options[type]);
