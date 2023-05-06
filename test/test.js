@@ -178,10 +178,9 @@ describe('node-precinct', () => {
         }
       };
 
-      const options = {
+      const results = precinct.paperwork('/foo.js', {
         fileSystem: fsMock
-      };
-      const results = precinct.paperwork('/foo.js', options);
+      });
       assert.equal(results.length, 1);
       assert.equal(results[0], 'assert');
     });
