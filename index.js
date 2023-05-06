@@ -61,67 +61,7 @@ function precinct(content, options = {}) {
   const type = options.type ?? getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
-  let detective;
-  const mixedMode = options.es6?.mixedImports;
-
-  switch (type) {
-    case 'cjs':
-    case 'commonjs': {
-      detective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
-      break;
-    }
-
-    case 'css': {
-      detective = detectivePostcss;
-      break;
-    }
-
-    case 'amd': {
-      detective = detectiveAmd;
-      break;
-    }
-
-    case 'mjs':
-    case 'esm':
-    case 'es6': {
-      detective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
-      break;
-    }
-
-    case 'sass': {
-      detective = detectiveSass;
-      break;
-    }
-
-    case 'less': {
-      detective = detectiveLess;
-      break;
-    }
-
-    case 'scss': {
-      detective = detectiveScss;
-      break;
-    }
-
-    case 'stylus': {
-      detective = detectiveStylus;
-      break;
-    }
-
-    case 'ts': {
-      detective = detectiveTypeScript;
-      break;
-    }
-
-    case 'tsx': {
-      detective = detectiveTypeScript.tsx;
-      break;
-    }
-
-    default:
-      // nothing
-  }
-
+  const detective = getDetective(type, options);
   let dependencies = [];
 
   if (detective) {
@@ -136,13 +76,6 @@ function precinct(content, options = {}) {
   }
 
   return dependencies;
-}
-
-function detectiveEs6Cjs(ast, detectiveOptions) {
-  return [
-    ...detectiveEs6(ast, detectiveOptions),
-    ...detectiveCjs(ast, detectiveOptions)
-  ];
 }
 
 /**
@@ -202,5 +135,64 @@ precinct.paperwork = (filename, options = {}) => {
   debug('paperwork: got these results\n', dependencies);
   return dependencies;
 };
+
+function getDetective(type, options) {
+  const mixedMode = options.es6?.mixedImports;
+
+  switch (type) {
+    case 'cjs':
+    case 'commonjs': {
+      return mixedMode ? detectiveEs6Cjs : detectiveCjs;
+    }
+
+    case 'css': {
+      return detectivePostcss;
+    }
+
+    case 'amd': {
+      return detectiveAmd;
+    }
+
+    case 'mjs':
+    case 'esm':
+    case 'es6': {
+      return mixedMode ? detectiveEs6Cjs : detectiveEs6;
+    }
+
+    case 'sass': {
+      return detectiveSass;
+    }
+
+    case 'less': {
+      return detectiveLess;
+    }
+
+    case 'scss': {
+      return detectiveScss;
+    }
+
+    case 'stylus': {
+      return detectiveStylus;
+    }
+
+    case 'ts': {
+      return detectiveTypeScript;
+    }
+
+    case 'tsx': {
+      return detectiveTypeScript.tsx;
+    }
+
+    default:
+      // nothing
+  }
+}
+
+function detectiveEs6Cjs(ast, detectiveOptions) {
+  return [
+    ...detectiveEs6(ast, detectiveOptions),
+    ...detectiveCjs(ast, detectiveOptions)
+  ];
+}
 
 module.exports = precinct;
