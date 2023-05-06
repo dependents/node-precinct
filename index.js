@@ -78,6 +78,64 @@ function precinct(content, options = {}) {
   return dependencies;
 }
 
+/**
+ * Returns the dependencies for the given file path
+ *
+ * @param {String} filename
+ * @param {Object} [options]
+ * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
+ * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
+ * @return {String[]}
+ */
+precinct.paperwork = (filename, options = {}) => {
+  options = { includeCore: true, ...options };
+
+  const fileSystem = options.fileSystem || fs;
+  const content = fileSystem.readFileSync(filename, 'utf8');
+  const ext = path.extname(filename);
+  let type;
+
+  if (ext === '.styl') {
+    debug('paperwork: converting .styl into the stylus type');
+    type = 'stylus';
+  } else if (ext === '.cjs') {
+    debug('paperwork: converting .cjs into the commonjs type');
+    type = 'commonjs';
+  // We need to sniff the JS module to find its type, not by extension.
+  // Other possible types pass through normally
+  } else if (!['.js', '.jsx'].includes(ext)) {
+    debug('paperwork: stripping the dot from the extension to serve as the type');
+    type = ext.replace('.', '');
+  }
+
+  if (type) {
+    debug('paperwork: setting the module type');
+    options.type = type;
+  }
+
+  debug('paperwork: invoking precinct');
+  const dependencies = precinct(content, options);
+
+  if (!options.includeCore) {
+    return dependencies.filter(dependency => {
+      if (dependency.startsWith('node:')) return false;
+
+      // In Node.js 18, node:test is a builtin but shows up under natives["test"],
+      // but can only be imported by "node:test." We're correcting this so "test"
+      // isn't unnecessarily stripped from the imports
+      if (dependency === 'test') {
+        debug('paperwork: allowing test import to avoid builtin/natives consideration');
+        return true;
+      }
+
+      return !natives[dependency];
+    });
+  }
+
+  debug('paperwork: got these results\n', dependencies);
+  return dependencies;
+};
+
 function getDetective(type, options) {
   const mixedMode = options.es6?.mixedImports;
 
@@ -136,63 +194,5 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
     ...detectiveCjs(ast, detectiveOptions)
   ];
 }
-
-/**
- * Returns the dependencies for the given file path
- *
- * @param {String} filename
- * @param {Object} [options]
- * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
- * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
- * @return {String[]}
- */
-precinct.paperwork = (filename, options = {}) => {
-  options = { includeCore: true, ...options };
-
-  const fileSystem = options.fileSystem || fs;
-  const content = fileSystem.readFileSync(filename, 'utf8');
-  const ext = path.extname(filename);
-  let type;
-
-  if (ext === '.styl') {
-    debug('paperwork: converting .styl into the stylus type');
-    type = 'stylus';
-  } else if (ext === '.cjs') {
-    debug('paperwork: converting .cjs into the commonjs type');
-    type = 'commonjs';
-  // We need to sniff the JS module to find its type, not by extension.
-  // Other possible types pass through normally
-  } else if (!['.js', '.jsx'].includes(ext)) {
-    debug('paperwork: stripping the dot from the extension to serve as the type');
-    type = ext.replace('.', '');
-  }
-
-  if (type) {
-    debug('paperwork: setting the module type');
-    options.type = type;
-  }
-
-  debug('paperwork: invoking precinct');
-  const dependencies = precinct(content, options);
-
-  if (!options.includeCore) {
-    return dependencies.filter(dependency => {
-      if (dependency.startsWith('node:')) return false;
-
-      // In Node.js 18, node:test is a builtin but shows up under natives["test"],
-      // but can only be imported by "node:test." We're correcting this so "test"
-      // isn't unnecessarily stripped from the imports
-      if (dependency === 'test') {
-        debug('paperwork: allowing test import to avoid builtin/natives consideration');
-        return true;
-      }
-
-      return !natives[dependency];
-    });
-  }
-
-  debug('paperwork: got these results\n', dependencies);
-  return dependencies;
-};
 
 module.exports = precinct;
