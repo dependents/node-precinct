@@ -58,11 +58,11 @@ function precinct(content, options = {}) {
     }
   }
 
-  const type = options.type || getModuleType.fromSource(ast);
+  const type = options.type ?? getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
   let detective;
-  const mixedMode = options.es6 && options.es6.mixedImports;
+  const mixedMode = options.es6?.mixedImports;
 
   switch (type) {
     case 'cjs':
@@ -131,7 +131,7 @@ function precinct(content, options = {}) {
   }
 
   // For non-JS files that we don't parse
-  if (detective && detective.ast) {
+  if (detective?.ast) {
     precinct.ast = detective.ast;
   }
 
