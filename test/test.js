@@ -26,147 +26,164 @@ describe('node-precinct', () => {
   });
 
   it('dangles off the parsed ast from a .js file', async() => {
-    precinct(await read('amd.js'));
+    const fixture = await read('amd.js');
+    precinct(fixture);
     assert.ok(precinct.ast);
     assert.notDeepEqual(precinct.ast, ast);
   });
 
   it('dangles off the parsed ast from a scss detective', async() => {
-    precinct(await read('styles.scss'), { type: 'scss' });
+    const fixture = await read('styles.scss');
+    precinct(fixture, { type: 'scss' });
     assert.notDeepEqual(precinct.ast, {});
   });
 
   it('dangles off the parsed ast from a sass detective', async() => {
-    precinct(await read('styles.sass'), { type: 'sass' });
+    const fixture = await read('styles.sass');
+    precinct(fixture, { type: 'sass' });
     assert.notDeepEqual(precinct.ast, {});
   });
 
   it('grabs dependencies of amd modules', async() => {
-    const amd = precinct(await read('amd.js'));
-    assert.equal(amd.includes('./a'), true);
-    assert.equal(amd.includes('./b'), true);
-    assert.equal(amd.length, 2);
+    const fixture = await read('amd.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('./a'), true);
+    assert.equal(result.includes('./b'), true);
+    assert.equal(result.length, 2);
   });
 
   it('grabs dependencies of commonjs modules', async() => {
-    const cjs = precinct(await read('commonjs.js'));
-    assert.equal(cjs.includes('./a'), true);
-    assert.equal(cjs.includes('./b'), true);
-    assert.equal(cjs.length, 2);
+    const fixture = await read('commonjs.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('./a'), true);
+    assert.equal(result.includes('./b'), true);
+    assert.equal(result.length, 2);
   });
 
   it('grabs dependencies of es6 modules', async() => {
-    const cjs = precinct(await read('es6.js'));
-    assert.equal(cjs.includes('lib'), true);
-    assert.equal(cjs.length, 1);
+    const fixture = await read('es6.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), true);
+    assert.equal(result.length, 1);
   });
 
   it('grabs dependencies of es6 modules with embedded jsx', async() => {
-    const cjs = precinct(await read('jsx.js'));
-    assert.equal(cjs.includes('lib'), true);
-    assert.equal(cjs.length, 1);
+    const fixture = await read('jsx.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), true);
+    assert.equal(result.length, 1);
   });
 
   it('grabs dependencies of es6 modules with embedded es7', async() => {
-    const cjs = precinct(await read('es7.js'));
-    assert.equal(cjs.includes('lib'), true);
-    assert.equal(cjs.length, 1);
+    const fixture = await read('es7.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), true);
+    assert.equal(result.length, 1);
   });
 
-  it('does not grabs dependencies of es6 modules with syntax errors', async() => {
-    const cjs = precinct(await read('es6WithError.js'));
-    assert.equal(cjs.length, 0);
+  it('does not grab dependencies of es6 modules with syntax errors', async() => {
+    const fixture = await read('es6WithError.js');
+    const result = precinct(fixture);
+    assert.equal(result.length, 0);
   });
 
   it('grabs dependencies of css files', async() => {
-    const css = precinct(await read('styles.css'), { type: 'css' });
-    assert.deepEqual(css, ['foo.css', 'baz.css', 'bla.css', 'another.css']);
+    const fixture = await read('styles.css');
+    const result = precinct(fixture, { type: 'css' });
+    assert.deepEqual(result, ['foo.css', 'baz.css', 'bla.css', 'another.css']);
   });
 
   it('grabs dependencies of scss files', async() => {
-    const scss = precinct(await read('styles.scss'), { type: 'scss' });
-    assert.deepEqual(scss, ['_foo', 'baz.scss']);
+    const fixture = await read('styles.scss');
+    const result = precinct(fixture, { type: 'scss' });
+    assert.deepEqual(result, ['_foo', 'baz.scss']);
   });
 
   it('grabs dependencies of sass files', async() => {
-    const sass = precinct(await read('styles.sass'), { type: 'sass' });
-    assert.deepEqual(sass, ['_foo']);
+    const fixture = await read('styles.sass');
+    const result = precinct(fixture, { type: 'sass' });
+    assert.deepEqual(result, ['_foo']);
   });
 
   it('grabs dependencies of stylus files', async() => {
-    const result = precinct(await read('styles.styl'), { type: 'stylus' });
+    const fixture = await read('styles.styl');
+    const result = precinct(fixture, { type: 'stylus' });
     const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
-
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of less files', async() => {
-    const result = precinct(await read('styles.less'), { type: 'less' });
+    const fixture = await read('styles.less');
+    const result = precinct(fixture, { type: 'less' });
     const expected = ['_foo', '_bar.css', 'baz.less'];
-
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of typescript files', async() => {
-    const result = precinct(await read('typescript.ts'), { type: 'ts' });
+    const fixture = await read('typescript.ts');
+    const result = precinct(fixture, { type: 'ts' });
     const expected = ['fs', 'lib', './bar', './my-module.js', './ZipCodeValidator'];
-
     assert.deepEqual(result, expected);
   });
 
   it('grabs dependencies of typescript tsx files', async() => {
-    const result = precinct(await read('module.tsx'), { type: 'tsx' });
+    const fixture = await read('module.tsx');
+    const result = precinct(fixture, { type: 'tsx' });
     const expected = ['./none'];
-
     assert.deepEqual(result, expected);
   });
 
-  it('does not grabs dependencies of typescript modules with syntax errors', async() => {
-    const result = precinct(await read('typescriptWithError.ts'));
+  it('does not grab dependencies of typescript modules with syntax errors', async() => {
+    const fixture = await read('typescriptWithError.ts');
+    const result = precinct(fixture);
     assert.equal(result.length, 0);
   });
 
   it('supports the object form of type configuration', async() => {
-    const result = precinct(await read('styles.styl'), { type: 'stylus' });
+    const fixture = await read('styles.styl');
+    const result = precinct(fixture, { type: 'stylus' });
     const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
-
     assert.deepEqual(result, expected);
   });
 
   it('yields no dependencies for es6 modules with no imports', async() => {
-    const cjs = precinct(await read('es6NoImport.js'));
-    assert.equal(cjs.length, 0);
+    const fixture = await read('es6NoImport.js');
+    const result = precinct(fixture);
+    assert.equal(result.length, 0);
   });
 
   it('yields no dependencies for non-modules', async() => {
-    const none = precinct(await read('none.js'));
-    assert.equal(none.length, 0);
+    const fixture = await read('none.js');
+    const result = precinct(fixture);
+    assert.equal(result.length, 0);
   });
 
   it('ignores unparsable .js files', async() => {
-    const cjs = precinct(await read('unparseable.js'));
-
-    assert.equal(cjs.includes('lib'), false);
-    assert.equal(cjs.length, 0);
+    const fixture = await read('unparseable.js');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), false);
+    assert.equal(result.length, 0);
   });
 
-  it('does not throw on unparsable .js files', () => {
-    assert.doesNotThrow(async() => {
-      precinct(await read('unparseable.js'));
+  it('does not throw on unparsable .js files', async() => {
+    const fixture = await read('unparseable.js');
+    assert.doesNotThrow(() => {
+      precinct(fixture);
     }, SyntaxError);
   });
 
-  it('does not blow up when parsing a gruntfile #2', () => {
-    assert.doesNotThrow(async() => {
-      precinct(await read('Gruntfile.js'));
+  it('does not blow up when parsing a gruntfile #2', async() => {
+    const fixture = await read('Gruntfile.js');
+    assert.doesNotThrow(() => {
+      precinct(fixture);
     });
   });
 
   describe('paperwork', () => {
     it('grabs dependencies of jsx files', () => {
-      const result = precinct.paperwork(path.join(__dirname, '/fixtures/module.jsx'));
+      const fixture = path.join(__dirname, '/fixtures/module.jsx');
+      const result = precinct.paperwork(fixture);
       const expected = ['./es6NoImport'];
-
       assert.deepEqual(result, expected);
     });
 
@@ -178,41 +195,47 @@ describe('node-precinct', () => {
         }
       };
 
-      const results = precinct.paperwork('/foo.js', { fileSystem: fsMock });
+      const fixture = '/foo.js';
+      const results = precinct.paperwork(fixture, { fileSystem: fsMock });
       assert.equal(results.length, 1);
       assert.equal(results[0], 'assert');
     });
 
     it('returns the dependencies for the given filepath', () => {
-      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/es6.js')).length, 0);
-      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/styles.scss')).length, 0);
-      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/typescript.ts')).length, 0);
-      assert.notEqual(precinct.paperwork(path.join(__dirname, '/fixtures/styles.css')).length, 0);
+      const fixtures = ['es6.js', 'styles.scss', 'typescript.ts', 'styles.css'];
+
+      for (const fixture of fixtures) {
+        const result = precinct.paperwork(path.join(__dirname, 'fixtures', fixture));
+        assert.notEqual(result.length, 0);
+      }
     });
 
     it('throws if the file cannot be found', () => {
+      const fixture = 'foo';
       assert.throws(() => {
-        precinct.paperwork('foo');
+        precinct.paperwork(fixture);
       });
     });
 
     it('filters out core modules if options.includeCore is false', () => {
-      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/coreModules.js'), {
+      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const result = precinct.paperwork(fixture, {
         includeCore: false
       });
-
-      assert.equal(deps.length, 0);
+      assert.equal(result.length, 0);
     });
 
     it('handles cjs files as commonjs', () => {
-      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/commonjs.cjs'));
-      assert.equal(deps.includes('./a'), true);
-      assert.equal(deps.includes('./b'), true);
+      const fixture = path.join(__dirname, '/fixtures/commonjs.cjs');
+      const result = precinct.paperwork(fixture);
+      assert.equal(result.includes('./a'), true);
+      assert.equal(result.includes('./b'), true);
     });
 
     it('does not filter out core modules by default', () => {
-      const deps = precinct.paperwork(path.join(__dirname, '/fixtures/coreModules.js'));
-      assert.notEqual(deps.length, 0);
+      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const result = precinct.paperwork(fixture);
+      assert.notEqual(result.length, 0);
     });
 
     it('supports passing detective configuration', () => {
@@ -223,8 +246,9 @@ describe('node-precinct', () => {
           skipLazyLoaded: true
         }
       };
+      const fixture = path.join(__dirname, '/fixtures/amd.js');
 
-      precinct.paperwork(path.join(__dirname, '/fixtures/amd.js'), {
+      precinct.paperwork(fixture, {
         includeCore: false,
         amd: config.amd
       });
@@ -237,8 +261,9 @@ describe('node-precinct', () => {
       it('still does not filter out core module by default', () => {
         const stub = sinon.stub().returns([]);
         const revert = precinct.__set__('precinct', stub);
+        const fixture = path.join(__dirname, '/fixtures/amd.js');
 
-        precinct.paperwork(path.join(__dirname, '/fixtures/amd.js'), {
+        precinct.paperwork(fixture, {
           amd: {
             skipLazyLoaded: true
           }
@@ -260,7 +285,8 @@ describe('node-precinct', () => {
         }
       };
 
-      precinct(await read('amd.js'), config);
+      const fixture = await read('amd.js');
+      precinct(fixture, config);
 
       assert.deepEqual(stub.args[0][1], config.amd);
       revert();
@@ -269,25 +295,27 @@ describe('node-precinct', () => {
     describe('that sets mixedImports for es6', () => {
       describe('for a file identified as es6', () => {
         it('returns both the commonjs and es6 dependencies', async() => {
-          const deps = precinct(await read('es6MixedImport.js'), {
+          const fixture = await read('es6MixedImport.js');
+          const result = precinct(fixture, {
             es6: {
               mixedImports: true
             }
           });
 
-          assert.equal(deps.length, 2);
+          assert.equal(result.length, 2);
         });
       });
 
       describe('for a file identified as cjs', () => {
         it('returns both the commonjs and es6 dependencies', async() => {
-          const deps = precinct(await read('cjsMixedImport.js'), {
+          const fixture = await read('cjsMixedImport.js');
+          const result = precinct(fixture, {
             es6: {
               mixedImports: true
             }
           });
 
-          assert.equal(deps.length, 2);
+          assert.equal(result.length, 2);
         });
       });
     });
@@ -295,21 +323,21 @@ describe('node-precinct', () => {
 
   describe('when lazy exported dependencies in CJS', () => {
     it('grabs those lazy dependencies', async() => {
-      const cjs = precinct(await read('cjsExportLazy.js'));
-
-      assert.equal(cjs[0], './amd');
-      assert.equal(cjs[1], './es6');
-      assert.equal(cjs[2], './es7');
-      assert.equal(cjs.length, 3);
+      const fixture = await read('cjsExportLazy.js');
+      const result = precinct(fixture);
+      assert.equal(result[0], './amd');
+      assert.equal(result[1], './es6');
+      assert.equal(result[2], './es7');
+      assert.equal(result.length, 3);
     });
   });
 
   describe('when a main require is used', () => {
     it('grabs those dependencies', async() => {
-      const cjs = precinct(await read('commonjs-requiremain.js'));
-
-      assert.equal(cjs[0], './b');
-      assert.equal(cjs.length, 1);
+      const fixture = await read('commonjs-requiremain.js');
+      const result = precinct(fixture);
+      assert.equal(result[0], './b');
+      assert.equal(result.length, 1);
     });
   });
 
@@ -317,61 +345,68 @@ describe('node-precinct', () => {
     describe('that uses CJS imports for lazy dependencies', () => {
       describe('and mixedImport mode is turned on', () => {
         it('grabs the lazy imports', async() => {
-          const es6 = precinct(await read('es6MixedExportLazy.js'), {
+          const fixture = await read('es6MixedExportLazy.js');
+          const result = precinct(fixture, {
             es6: {
               mixedImports: true
             }
           });
 
-          assert.equal(es6[0], './amd');
-          assert.equal(es6[1], './es6');
-          assert.equal(es6[2], './es7');
-          assert.equal(es6.length, 3);
+          assert.equal(result[0], './amd');
+          assert.equal(result[1], './es6');
+          assert.equal(result[2], './es7');
+          assert.equal(result.length, 3);
         });
       });
 
       describe('and mixedImport mode is turned off', () => {
         it('does not grab any imports', async() => {
-          const es6 = precinct(await read('es6MixedExportLazy.js'));
-          assert.equal(es6.length, 0);
+          const fixture = await read('es6MixedExportLazy.js');
+          const result = precinct(fixture);
+          assert.equal(result.length, 0);
         });
       });
     });
 
     describe('that imports node-internal with node:-prefix', () => {
       it('assumes that it exists', () => {
-        const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'internalNodePrefix.js'), {
+        const fixture = path.join(__dirname, 'fixtures', 'internalNodePrefix.js');
+        const result = precinct.paperwork(fixture, {
           includeCore: false
         });
-        assert.equal(deps.includes('node:nonexistant'), false);
-        assert.deepEqual(deps, ['streams']);
+        assert.equal(result.includes('node:nonexistant'), false);
+        assert.deepEqual(result, ['streams']);
       });
 
       it('understands quirks around some modules only being addressable via node: prefix', () => {
-        const deps = precinct.paperwork(path.join(__dirname, 'fixtures', 'requiretest.js'), {
+        const fixture = path.join(__dirname, 'fixtures', 'requiretest.js');
+        const result = precinct.paperwork(fixture, {
           includeCore: false
         });
-        assert.deepEqual(deps, ['test']);
+        assert.deepEqual(result, ['test']);
       });
     });
 
     describe('that uses dynamic imports', () => {
       it('grabs the dynamic import', async() => {
-        const es6 = precinct(await read('es6DynamicImport.js'));
-        assert.equal(es6[0], './bar');
+        const fixture = await read('es6DynamicImport.js');
+        const result = precinct(fixture);
+        assert.equal(result[0], './bar');
       });
     });
   });
 
   it('handles the esm extension', async() => {
-    const cjs = precinct(await read('es6.esm'));
-    assert.equal(cjs.includes('lib'), true);
-    assert.equal(cjs.length, 1);
+    const fixture = await read('es6.esm');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), true);
+    assert.equal(result.length, 1);
   });
 
   it('handles the mjs extension', async() => {
-    const cjs = precinct(await read('es6.mjs'));
-    assert.equal(cjs.includes('lib'), true);
-    assert.equal(cjs.length, 1);
+    const fixture = await read('es6.mjs');
+    const result = precinct(fixture);
+    assert.equal(result.includes('lib'), true);
+    assert.equal(result.length, 1);
   });
 });
