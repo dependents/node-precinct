@@ -219,9 +219,7 @@ describe('node-precinct', () => {
 
     it('filters out core modules if options.includeCore is false', () => {
       const fixture = path.join(__dirname, '/fixtures/coreModules.js');
-      const result = precinct.paperwork(fixture, {
-        includeCore: false
-      });
+      const result = precinct.paperwork(fixture, { includeCore: false });
       assert.equal(result.length, 0);
     });
 
