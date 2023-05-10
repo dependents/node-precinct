@@ -14,12 +14,12 @@ Uses the appropriate detective to find the dependencies of a file or its AST.
 
 Supports:
 
-* JavaScript modules: AMD, CommonJS, and ES6.
+* JavaScript modules: AMD, CommonJS, and ES6
 * TypeScript
 * CSS Preprocessors: Sass, Scss, Stylus, and Less
 * CSS (PostCSS)
 
-### Usage
+## Usage
 
 ```js
 const fs = require('fs');
@@ -44,7 +44,7 @@ precinct(content, {
 });
 ```
 
-* The supported module type prefixes are `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`
+* The supported module type prefixes are: `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`.
 
 Current options:
 
@@ -72,7 +72,7 @@ const deps = paperwork('myFile.js');
 const deps2 = paperwork('styles.scss');
 ```
 
-#### `precinct.paperwork(filename, options)`
+### `precinct.paperwork(filename, options)`
 
 Supported options:
 
@@ -80,16 +80,16 @@ Supported options:
 * `fileSystem`: (default: `undefined`) set to an alternative `fs` implementation that will be used to read the file path.
 * You may also pass detective-specific configuration like you would to `precinct(content, options)`.
 
-#### CLI
+### CLI
 
-*Assumes a global install precinct with `npm install -g precinct`*
+Assumes a global install precinct with `npm install -g precinct`.
 
 ```sh
 precinct [options] path/to/file
 ```
 
-Run `precinct --help` to see all the options.
+Run `precinct --help` to see all options.
 
-### License
+## License
 
 [MIT](LICENSE)
