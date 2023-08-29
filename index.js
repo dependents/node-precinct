@@ -2,15 +2,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 const { debuglog } = require('util');
-
 const getModuleType = require('module-definition');
 const Walker = require('node-source-walk');
-
 const detectiveAmd = require('detective-amd');
 const detectiveCjs = require('detective-cjs');
 const detectiveEs6 = require('detective-es6');
-const detectiveLess = require('detective-less');
+const detectiveLess = require('@dependents/detective-less');
 const detectivePostcss = require('detective-postcss');
 const detectiveSass = require('detective-sass');
 const detectiveScss = require('detective-scss');
@@ -19,6 +18,7 @@ const detectiveTypeScript = require('detective-typescript');
 const detectiveVue = require('detective-vue2');
 
 const debug = debuglog('precinct');
+// eslint-disable-next-line n/no-deprecated-api
 const natives = process.binding('natives');
 
 /**
@@ -32,12 +32,10 @@ const natives = process.binding('natives');
 function precinct(content, options = {}) {
   debug('options given: %o', options);
 
-  let dependencies = [];
   let ast;
-  let type = options.type;
 
   // We assume we're dealing with a JS file
-  if (!type && typeof content !== 'object') {
+  if (!options.type && typeof content !== 'object') {
     debug('we assume this is JS');
     const walker = new Walker();
 
@@ -50,7 +48,7 @@ function precinct(content, options = {}) {
       // In case a previous call had it populated
       precinct.ast = null;
       debug('could not parse content: %s', error.message);
-      return dependencies;
+      return [];
     }
   // SASS files shouldn't be parsed by Acorn
   } else {
@@ -61,69 +59,27 @@ function precinct(content, options = {}) {
     }
   }
 
-  type = type || getModuleType.fromSource(ast);
+  const type = options.type ?? getModuleType.fromSource(ast);
   debug('module type: %s', type);
 
-  let theDetective;
-  const mixedMode = options.es6 && options.es6.mixedImports;
+  const detective = getDetective(type, options);
+  let dependencies = [];
 
-  switch (type) {
-    case 'cjs':
-    case 'commonjs':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveCjs;
-      break;
-    case 'css':
-      theDetective = detectivePostcss;
-      break;
-    case 'amd':
-      theDetective = detectiveAmd;
-      break;
-    case 'mjs':
-    case 'esm':
-    case 'es6':
-      theDetective = mixedMode ? detectiveEs6Cjs : detectiveEs6;
-      break;
-    case 'sass':
-      theDetective = detectiveSass;
-      break;
-    case 'less':
-      theDetective = detectiveLess;
-      break;
-    case 'scss':
-      theDetective = detectiveScss;
-      break;
-    case 'stylus':
-      theDetective = detectiveStylus;
-      break;
-    case 'ts':
-      theDetective = detectiveTypeScript;
-      break;
-    case 'tsx':
-      theDetective = detectiveTypeScript.tsx;
-      break;
+  if (detective) {
+    dependencies = detective(ast, options[type]);
     case 'vue':
       theDetective = detectiveVue;
       break;
-    default:
-      // nothing
-  }
-
-  if (theDetective) {
-    dependencies = theDetective(ast, options[type]);
   } else {
     debug('no detective found for: %s', type);
   }
 
   // For non-JS files that we don't parse
-  if (theDetective && theDetective.ast) {
-    precinct.ast = theDetective.ast;
+  if (detective?.ast) {
+    precinct.ast = detective.ast;
   }
 
   return dependencies;
-}
-
-function detectiveEs6Cjs(ast, detectiveOptions) {
-  return detectiveEs6(ast, detectiveOptions).concat(detectiveCjs(ast, detectiveOptions));
 }
 
 /**
@@ -149,9 +105,9 @@ precinct.paperwork = (filename, options = {}) => {
   } else if (ext === '.cjs') {
     debug('paperwork: converting .cjs into the commonjs type');
     type = 'commonjs';
-  // We need to sniff the JS module to find its type, not by extension
+  // We need to sniff the JS module to find its type, not by extension.
   // Other possible types pass through normally
-  } else if (ext !== '.js' && ext !== '.jsx') {
+  } else if (!['.js', '.jsx'].includes(ext)) {
     debug('paperwork: stripping the dot from the extension to serve as the type');
     type = ext.replace('.', '');
   }
@@ -162,29 +118,85 @@ precinct.paperwork = (filename, options = {}) => {
   }
 
   debug('paperwork: invoking precinct');
-  const deps = precinct(content, options);
+  const dependencies = precinct(content, options);
 
   if (!options.includeCore) {
-    return deps.filter((dep) => {
-      if (dep.startsWith('node:')) {
-        return false
+    return dependencies.filter(dependency => {
+      if (dependency.startsWith('node:')) return false;
+
+      // In Node.js 18, node:test is a builtin but shows up under natives["test"],
+      // but can only be imported by "node:test." We're correcting this so "test"
+      // isn't unnecessarily stripped from the imports
+      if (dependency === 'test') {
+        debug('paperwork: allowing test import to avoid builtin/natives consideration');
+        return true;
       }
 
-      // In nodejs 18, node:test is a builtin but shows up under natives["test"], but
-      // can only be imported by "node:test." We're correcting this so "test" isn't
-      // unnecessarily stripped from the imports
-      if ("test" == dep) {
-        debug('paperwork: allowing test import to avoid builtin/natives consideration\n');
-        return true
-      }
-
-      const isInNatives = Boolean(natives[dep]);
-      return !isInNatives;
+      return !natives[dependency];
     });
   }
 
-  debug('paperwork: got these results\n', deps);
-  return deps;
+  debug('paperwork: got these results\n', dependencies);
+  return dependencies;
 };
+
+function getDetective(type, options) {
+  const mixedMode = options.es6?.mixedImports;
+
+  switch (type) {
+    case 'cjs':
+    case 'commonjs': {
+      return mixedMode ? detectiveEs6Cjs : detectiveCjs;
+    }
+
+    case 'css': {
+      return detectivePostcss;
+    }
+
+    case 'amd': {
+      return detectiveAmd;
+    }
+
+    case 'mjs':
+    case 'esm':
+    case 'es6': {
+      return mixedMode ? detectiveEs6Cjs : detectiveEs6;
+    }
+
+    case 'sass': {
+      return detectiveSass;
+    }
+
+    case 'less': {
+      return detectiveLess;
+    }
+
+    case 'scss': {
+      return detectiveScss;
+    }
+
+    case 'stylus': {
+      return detectiveStylus;
+    }
+
+    case 'ts': {
+      return detectiveTypeScript;
+    }
+
+    case 'tsx': {
+      return detectiveTypeScript.tsx;
+    }
+
+    default:
+      // nothing
+  }
+}
+
+function detectiveEs6Cjs(ast, detectiveOptions) {
+  return [
+    ...detectiveEs6(ast, detectiveOptions),
+    ...detectiveCjs(ast, detectiveOptions)
+  ];
+}
 
 module.exports = precinct;
