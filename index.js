@@ -67,9 +67,6 @@ function precinct(content, options = {}) {
 
   if (detective) {
     dependencies = detective(ast, options[type]);
-    case 'vue':
-      theDetective = detectiveVue;
-      break;
   } else {
     debug('no detective found for: %s', type);
   }
@@ -185,6 +182,10 @@ function getDetective(type, options) {
 
     case 'tsx': {
       return detectiveTypeScript.tsx;
+    }
+
+    case 'vue': {
+      return detectiveVue;
     }
 
     default:
