@@ -51,6 +51,7 @@
     "detective-scss": "^4.0.3",
     "detective-stylus": "^4.0.0",
     "detective-typescript": "^11.1.0",
+    "detective-vue2": "^1.0.1",
     "module-definition": "^5.0.1",
     "node-source-walk": "^6.0.2"
   },

@@ -15,6 +15,7 @@ const detectiveSass = require('detective-sass');
 const detectiveScss = require('detective-scss');
 const detectiveStylus = require('detective-stylus');
 const detectiveTypeScript = require('detective-typescript');
+const detectiveVue = require('detective-vue2');
 
 const debug = debuglog('precinct');
 // eslint-disable-next-line n/no-deprecated-api
@@ -181,6 +182,10 @@ function getDetective(type, options) {
 
     case 'tsx': {
       return detectiveTypeScript.tsx;
+    }
+
+    case 'vue': {
+      return detectiveVue;
     }
 
     default:
