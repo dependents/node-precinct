@@ -3,6 +3,7 @@
   "version": "12.0.1",
   "description": "Unleash the detectives",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "lint": "xo",
     "fix": "xo --fix",
