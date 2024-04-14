@@ -50,10 +50,11 @@
     "detective-sass": "^6.0.0",
     "detective-scss": "^5.0.0",
     "detective-stylus": "^5.0.0",
-    "detective-typescript": "^12.0.0",
+    "detective-typescript": "^13.0.0",
     "module-definition": "^6.0.0",
     "node-source-walk": "^7.0.0",
-    "postcss": "^8.4.38"
+    "postcss": "^8.4.38",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "c8": "^9.1.0",
