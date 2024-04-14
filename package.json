@@ -52,6 +52,7 @@
     "detective-scss": "^5.0.0",
     "detective-stylus": "^5.0.0",
     "detective-typescript": "^13.0.0",
+    "detective-vue2": "^2.0.0",
     "module-definition": "^6.0.0",
     "node-source-walk": "^7.0.0",
     "postcss": "^8.4.38",

@@ -319,6 +319,24 @@ describe('node-precinct', () => {
     });
   });
 
+  describe('when given vue file', () => {
+    it('typescript - scss grabs script and style dependencies', () => {
+      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures', 'ts.vue'));
+
+      assert.equal(vueFile[0], './typescript');
+      assert.equal(vueFile[1], 'styles.scss');
+      assert.equal(vueFile.length, 2);
+    });
+
+    it('javascript - sass grabs script and style dependencies', () => {
+      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures', 'js.vue'));
+
+      assert.equal(vueFile[0], './typescript');
+      assert.equal(vueFile[1], 'styles.scss');
+      assert.equal(vueFile.length, 2);
+    });
+  });
+
   describe('when lazy exported dependencies in CJS', () => {
     it('grabs those lazy dependencies', async() => {
       const fixture = await read('cjsExportLazy.js');
