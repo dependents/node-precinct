@@ -34,7 +34,7 @@
     "url": "https://github.com/dependents/node-precinct/issues"
   },
   "engines": {
-    "node": "^14.14.0 || >=16.0.0"
+    "node": ">=18"
   },
   "files": [
     "bin/cli.js",
