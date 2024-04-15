@@ -44,7 +44,7 @@ precinct(content, {
 });
 ```
 
-* The supported module type prefixes are: `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`.
+* The supported module type prefixes are: `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`, `vue`.
 
 Current options:
 
