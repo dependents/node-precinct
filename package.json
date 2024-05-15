@@ -38,7 +38,8 @@
   },
   "files": [
     "bin/cli.js",
-    "index.js"
+    "index.js",
+    "index.d.ts"
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
