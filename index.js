@@ -66,7 +66,11 @@ function precinct(content, options = {}) {
   let dependencies = [];
 
   if (detective) {
-    dependencies = detective(ast, options[type]);
+    dependencies = detective(ast, {
+      ...options[type],
+      filename: options.filename,
+      treePath: options.treePath
+    });
   } else {
     debug('no detective found for: %s', type);
   }
@@ -89,7 +93,7 @@ function precinct(content, options = {}) {
  * @return {String[]}
  */
 precinct.paperwork = (filename, options = {}) => {
-  options = { includeCore: true, ...options };
+  options = { includeCore: true, filename, ...options };
 
   const fileSystem = options.fileSystem || fs;
   const content = fileSystem.readFileSync(filename, 'utf8');
