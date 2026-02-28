@@ -18,6 +18,7 @@ Supports:
 * TypeScript
 * CSS Preprocessors: Sass, Scss, Stylus, and Less
 * CSS (PostCSS)
+* Vue
 
 ## Usage
 
