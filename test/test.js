@@ -394,12 +394,27 @@ describe('node-precinct', () => {
         assert.deepEqual(result, ['streams']);
       });
 
+      it('does not filter out node:-prefixed builtins by default', () => {
+        const fixture = path.join(__dirname, 'fixtures', 'nodeBuiltinPrefix.js');
+        const result = precinct.paperwork(fixture);
+        assert.ok(result.includes('node:fs'));
+        assert.ok(result.includes('node:path'));
+      });
+
       it('understands quirks around some modules only being addressable via node: prefix', () => {
         const fixture = path.join(__dirname, 'fixtures', 'requiretest.js');
         const result = precinct.paperwork(fixture, {
           includeCore: false
         });
         assert.deepEqual(result, ['test']);
+      });
+
+      it('filters out node:-prefixed builtins when includeCore is false', () => {
+        const fixture = path.join(__dirname, 'fixtures', 'nodeBuiltinPrefix.js');
+        const result = precinct.paperwork(fixture, {
+          includeCore: false
+        });
+        assert.deepEqual(result, ['./myModule']);
       });
     });
 
