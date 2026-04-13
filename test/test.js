@@ -5,11 +5,8 @@
 const assert = require('assert').strict;
 const { readFile } = require('fs/promises');
 const path = require('path');
-const rewire = require('rewire');
-const sinon = require('sinon');
+const precinct = require('../index.js');
 const ast = require('./fixtures/exampleAST.js');
-
-const precinct = rewire('../index.js');
 
 async function read(filename) {
   return readFile(path.join(__dirname, 'fixtures', filename), 'utf8');
@@ -63,6 +60,7 @@ describe('node-precinct', () => {
       assert.equal(result.includes('./a'), true);
       assert.equal(result.includes('./b'), true);
       assert.equal(result.length, 2);
+      assert.deepEqual(precinct(fixture, { type: 'cjs' }), result);
     });
 
     it('grabs lazy exported dependencies', async() => {
@@ -131,16 +129,16 @@ describe('node-precinct', () => {
       assert.equal(result.length, 1);
     });
 
-    it('handles the esm extension', async() => {
-      const fixture = await read('es6.esm');
-      const result = precinct(fixture);
+    it('handles the esm extension', () => {
+      const fixture = path.join(__dirname, 'fixtures/es6.esm');
+      const result = precinct.paperwork(fixture);
       assert.equal(result.includes('lib'), true);
       assert.equal(result.length, 1);
     });
 
-    it('handles the mjs extension', async() => {
-      const fixture = await read('es6.mjs');
-      const result = precinct(fixture);
+    it('handles the mjs extension', () => {
+      const fixture = path.join(__dirname, 'fixtures/es6.mjs');
+      const result = precinct.paperwork(fixture);
       assert.equal(result.includes('lib'), true);
       assert.equal(result.length, 1);
     });
@@ -206,27 +204,27 @@ describe('node-precinct', () => {
 
     describe('node: prefix', () => {
       it('assumes node:-prefixed builtins exist', () => {
-        const fixture = path.join(__dirname, 'fixtures', 'internalNodePrefix.js');
+        const fixture = path.join(__dirname, 'fixtures/internalNodePrefix.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.equal(result.includes('node:nonexistant'), false);
         assert.deepEqual(result, ['streams']);
       });
 
       it('does not filter out node:-prefixed builtins by default', () => {
-        const fixture = path.join(__dirname, 'fixtures', 'nodeBuiltinPrefix.js');
+        const fixture = path.join(__dirname, 'fixtures/nodeBuiltinPrefix.js');
         const result = precinct.paperwork(fixture);
         assert.ok(result.includes('node:fs'));
         assert.ok(result.includes('node:path'));
       });
 
       it('understands quirks around modules only addressable via node: prefix', () => {
-        const fixture = path.join(__dirname, 'fixtures', 'requiretest.js');
+        const fixture = path.join(__dirname, 'fixtures/requiretest.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.deepEqual(result, ['test']);
       });
 
       it('filters out node:-prefixed builtins when includeCore is false', () => {
-        const fixture = path.join(__dirname, 'fixtures', 'nodeBuiltinPrefix.js');
+        const fixture = path.join(__dirname, 'fixtures/nodeBuiltinPrefix.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.deepEqual(result, ['./myModule']);
       });
@@ -252,9 +250,9 @@ describe('node-precinct', () => {
       assert.deepEqual(result, ['_foo']);
     });
 
-    it('grabs dependencies of stylus files', async() => {
-      const fixture = await read('styles.styl');
-      const result = precinct(fixture, { type: 'stylus' });
+    it('grabs dependencies of stylus files', () => {
+      const fixture = path.join(__dirname, 'fixtures/styles.styl');
+      const result = precinct.paperwork(fixture);
       const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
       assert.deepEqual(result, expected);
     });
@@ -291,14 +289,14 @@ describe('node-precinct', () => {
 
   describe('Vue', () => {
     it('grabs dependencies from typescript/scss files', () => {
-      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures', 'ts.vue'));
+      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures/ts.vue'));
       assert.equal(vueFile[0], './typescript');
       assert.equal(vueFile[1], 'styles.scss');
       assert.equal(vueFile.length, 2);
     });
 
     it('grabs dependencies from javascript/sass files', () => {
-      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures', 'js.vue'));
+      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures/js.vue'));
       assert.equal(vueFile[0], './typescript');
       assert.equal(vueFile[1], 'styles.scss');
       assert.equal(vueFile.length, 2);
@@ -307,19 +305,15 @@ describe('node-precinct', () => {
 
   describe('configuration', () => {
     it('passes amd config to the amd detective', async() => {
-      const stub = sinon.stub();
-      const revert = precinct.__set__('detectiveAmd', stub);
-      const config = {
+      const fixture = await read('amdLazy.js');
+      const withLazy = precinct(fixture);
+      const withoutLazy = precinct(fixture, {
         amd: {
           skipLazyLoaded: true
         }
-      };
-
-      const fixture = await read('amd.js');
-      precinct(fixture, config);
-
-      assert.deepEqual(stub.args[0][1], config.amd);
-      revert();
+      });
+      assert.equal(withLazy.includes('./b'), true);
+      assert.equal(withoutLazy.includes('./b'), false);
     });
 
     it('supports the object form of type configuration', async() => {
@@ -387,38 +381,26 @@ describe('node-precinct', () => {
       assert.equal(result.includes('./b'), true);
     });
 
-    it('supports passing detective configuration', () => {
-      const stub = sinon.stub().returns([]);
-      const revert = precinct.__set__('detectiveAmd', stub);
-      const config = {
+    it('passes detective configuration to the underlying detective', () => {
+      const fixture = path.join(__dirname, '/fixtures/amdLazy.js');
+      const withLazy = precinct.paperwork(fixture);
+      const withoutLazy = precinct.paperwork(fixture, {
         amd: {
           skipLazyLoaded: true
         }
-      };
-      const fixture = path.join(__dirname, '/fixtures/amd.js');
-
-      precinct.paperwork(fixture, {
-        includeCore: false,
-        amd: config.amd
       });
-
-      assert.deepEqual(stub.args[0][1], config.amd);
-      revert();
+      assert.equal(withLazy.includes('./b'), true);
+      assert.equal(withoutLazy.includes('./b'), false);
     });
 
-    it('still does not filter out core modules by default when given detective configuration', () => {
-      const stub = sinon.stub().returns([]);
-      const revert = precinct.__set__('precinct', stub);
-      const fixture = path.join(__dirname, '/fixtures/amd.js');
-
-      precinct.paperwork(fixture, {
+    it('does not filter out core modules by default when given detective configuration', () => {
+      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const result = precinct.paperwork(fixture, {
         amd: {
           skipLazyLoaded: true
         }
       });
-
-      assert.equal(stub.args[0][1].includeCore, true);
-      revert();
+      assert.notEqual(result.length, 0);
     });
   });
 });
