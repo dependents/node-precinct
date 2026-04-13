@@ -1,8 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const { builtinModules } = require('module');
 const path = require('path');
-const process = require('process');
 const { debuglog } = require('util');
 const getModuleType = require('module-definition');
 const Walker = require('node-source-walk');
@@ -18,8 +18,6 @@ const detectiveTypeScript = require('detective-typescript');
 const detectiveVue = require('detective-vue2');
 
 const debug = debuglog('precinct');
-// eslint-disable-next-line n/no-deprecated-api
-const natives = process.binding('natives');
 
 /**
  * Finds the list of dependencies for the given file
@@ -129,7 +127,7 @@ precinct.paperwork = (filename, options = {}) => {
         return true;
       }
 
-      return !natives[dependency];
+      return !builtinModules.includes(dependency);
     });
   }
 
