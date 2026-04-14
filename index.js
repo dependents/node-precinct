@@ -22,11 +22,11 @@ const debug = debuglog('precinct');
 /**
  * Finds the list of dependencies for the given file
  *
- * @param {String|Object} content - File's content or AST
- * @param {Object} [options]
- * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-JS detective
+ * @param {string|object} content - File's content or AST
+ * @param {object} [options]
+ * @param {string} [options.type] - The type of content being passed in. Useful if you want to use a non-JS detective
  * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
- * @return {String[]}
+ * @return {string[]}
  */
 function precinct(content, options = {}) {
   debug('options given: %o', options);
@@ -81,12 +81,12 @@ function precinct(content, options = {}) {
 /**
  * Returns the dependencies for the given file path
  *
- * @param {String} filename
- * @param {Object} [options]
- * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
- * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
+ * @param {string} filename
+ * @param {object} [options]
+ * @param {boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
+ * @param {object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
  * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
- * @return {String[]}
+ * @return {string[]}
  */
 precinct.paperwork = (filename, options = {}) => {
   options = { includeCore: true, ...options };
