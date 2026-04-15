@@ -53,6 +53,24 @@ Current options:
 * `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
   * Note: This will work for any file format that contains an ES6 import.
 * `css.url`: tells the CSS detective to include `url()` references to images, fonts, etc.
+* `walker`: options passed directly to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance.
+
+  Example:
+
+  ```js
+  precinct(content, {
+    walker: {
+      allowImportExportEverywhere: true
+    }
+  });
+
+  // Or supply a fully custom parser:
+  precinct(content, {
+    walker: {
+      parser: myCustomParser // any object with a .parse(src, opts) method
+    }
+  });
+  ```
 
 Finding non-JavaScript (ex: Sass and Stylus) dependencies:
 
@@ -79,6 +97,7 @@ Supported options:
 
 * `includeCore`: (default: `true`) set to `false` to exclude core Node.js dependencies from the list of dependencies.
 * `fileSystem`: (default: `undefined`) set to an alternative `fs` implementation that will be used to read the file path.
+* `walker`: (default: `undefined`) options forwarded to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance - same as the top-level `walker` option.
 * You may also pass detective-specific configuration like you would to `precinct(content, options)`.
 
 ### CLI
