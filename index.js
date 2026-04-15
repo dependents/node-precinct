@@ -25,6 +25,7 @@ const debug = debuglog('precinct');
  * @param {String|Object} content - File's content or AST
  * @param {Object} [options]
  * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-js detective
+ * @param {Object} [options.walker] - Options to pass to the underlying source walker (node-source-walk)
  * @return {String[]}
  */
 function precinct(content, options = {}) {
@@ -35,7 +36,7 @@ function precinct(content, options = {}) {
   // We assume we're dealing with a JS file
   if (!options.type && typeof content !== 'object') {
     debug('we assume this is JS');
-    const walker = new Walker();
+    const walker = new Walker(options.walker);
 
     try {
       // Parse once and distribute the AST to all detectives

@@ -322,6 +322,63 @@ describe('node-precinct', () => {
       const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
       assert.deepEqual(result, expected);
     });
+
+    describe('walker options', () => {
+      it('finds imports inside blocks when allowImportExportEverywhere is enabled', async() => {
+        // By default babel disallows import/export outside the top level, so
+        // a file with an import inside an if-block yields no dependencies.
+        const fixture = await read('es6ImportInsideBlock.js');
+        const withoutOption = precinct(fixture);
+        assert.equal(withoutOption.length, 0);
+
+        // With allowImportExportEverywhere the same file is parsed correctly.
+        const withOption = precinct(fixture, {
+          walker: {
+            allowImportExportEverywhere: true
+          }
+        });
+        assert.equal(withOption.includes('lib'), true);
+        assert.equal(withOption.length, 1);
+      });
+
+      it('accepts a custom parser via walker options', async() => {
+        const fixture = await read('commonjs.js');
+
+        // Parse the AST up-front - the custom parser below returns it directly
+        // without invoking Babel, demonstrating that any object with a parse()
+        // method can be supplied, not just @babel/parser.
+        const prebuiltAst = require('@babel/parser').parse(fixture, {
+          sourceType: 'module',
+          allowHashBang: true
+        });
+
+        let parseCallCount = 0;
+        const customParser = {
+          parse() {
+            parseCallCount++;
+            return prebuiltAst;
+          }
+        };
+
+        const result = precinct(fixture, { walker: { parser: customParser } });
+        assert.equal(parseCallCount, 1);
+        assert.equal(result.includes('./a'), true);
+      });
+
+      it('passes walker options through paperwork', () => {
+        const fixture = path.join(__dirname, 'fixtures/es6ImportInsideBlock.js');
+        const withoutOption = precinct.paperwork(fixture);
+        assert.equal(withoutOption.length, 0);
+
+        const withOption = precinct.paperwork(fixture, {
+          walker: {
+            allowImportExportEverywhere: true
+          }
+        });
+        assert.equal(withOption.includes('lib'), true);
+        assert.equal(withOption.length, 1);
+      });
+    });
   });
 
   describe('paperwork', () => {
