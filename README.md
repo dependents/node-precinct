@@ -53,9 +53,7 @@ Current options:
 * `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
   * Note: This will work for any file format that contains an ES6 import.
 * `css.url`: tells the CSS detective to include `url()` references to images, fonts, etc.
-* `walker`: options passed directly to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance. Controls how JavaScript source is parsed. Key sub-options:
-  * `sourceType`, `plugins`, etc. - forwarded to the default `@babel/parser`.
-  * `parser` - replace the parser entirely with any object that exposes a `parse(src, options)` method returning an AST. The replacement does not have to be Babel-based.
+* `walker`: options passed directly to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance.
 
   Example:
 
