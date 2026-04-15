@@ -360,7 +360,11 @@ describe('node-precinct', () => {
           }
         };
 
-        const result = precinct(fixture, { walker: { parser: customParser } });
+        const result = precinct(fixture, {
+          walker: {
+            parser: customParser
+          }
+        });
         assert.equal(parseCallCount, 1);
         assert.equal(result.includes('./a'), true);
       });
