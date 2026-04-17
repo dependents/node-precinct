@@ -8,8 +8,12 @@ const path = require('path');
 const precinct = require('../index.js');
 const ast = require('./fixtures/exampleAST.js');
 
+function fixturePath(filename) {
+  return path.join(__dirname, 'fixtures', filename);
+}
+
 async function read(filename) {
-  return readFile(path.join(__dirname, 'fixtures', filename), 'utf8');
+  return readFile(fixturePath(filename), 'utf8');
 }
 
 describe('node-precinct', () => {
@@ -130,14 +134,14 @@ describe('node-precinct', () => {
     });
 
     it('handles the esm extension', () => {
-      const fixture = path.join(__dirname, 'fixtures/es6.esm');
+      const fixture = fixturePath('es6.esm');
       const result = precinct.paperwork(fixture);
       assert.equal(result.includes('lib'), true);
       assert.equal(result.length, 1);
     });
 
     it('handles the mjs extension', () => {
-      const fixture = path.join(__dirname, 'fixtures/es6.mjs');
+      const fixture = fixturePath('es6.mjs');
       const result = precinct.paperwork(fixture);
       assert.equal(result.includes('lib'), true);
       assert.equal(result.length, 1);
@@ -204,27 +208,27 @@ describe('node-precinct', () => {
 
     describe('node: prefix', () => {
       it('assumes node:-prefixed builtins exist', () => {
-        const fixture = path.join(__dirname, 'fixtures/internalNodePrefix.js');
+        const fixture = fixturePath('internalNodePrefix.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.equal(result.includes('node:nonexistant'), false);
         assert.deepEqual(result, ['streams']);
       });
 
       it('does not filter out node:-prefixed builtins by default', () => {
-        const fixture = path.join(__dirname, 'fixtures/nodeBuiltinPrefix.js');
+        const fixture = fixturePath('nodeBuiltinPrefix.js');
         const result = precinct.paperwork(fixture);
         assert.ok(result.includes('node:fs'));
         assert.ok(result.includes('node:path'));
       });
 
       it('understands quirks around modules only addressable via node: prefix', () => {
-        const fixture = path.join(__dirname, 'fixtures/requiretest.js');
+        const fixture = fixturePath('requiretest.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.deepEqual(result, ['test']);
       });
 
       it('filters out node:-prefixed builtins when includeCore is false', () => {
-        const fixture = path.join(__dirname, 'fixtures/nodeBuiltinPrefix.js');
+        const fixture = fixturePath('nodeBuiltinPrefix.js');
         const result = precinct.paperwork(fixture, { includeCore: false });
         assert.deepEqual(result, ['./myModule']);
       });
@@ -251,7 +255,7 @@ describe('node-precinct', () => {
     });
 
     it('grabs dependencies of stylus files', () => {
-      const fixture = path.join(__dirname, 'fixtures/styles.styl');
+      const fixture = fixturePath('styles.styl');
       const result = precinct.paperwork(fixture);
       const expected = ['mystyles', 'styles2.styl', 'styles3.styl', 'styles4'];
       assert.deepEqual(result, expected);
@@ -289,14 +293,14 @@ describe('node-precinct', () => {
 
   describe('Vue', () => {
     it('grabs dependencies from typescript/scss files', () => {
-      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures/ts.vue'));
+      const vueFile = precinct.paperwork(fixturePath('ts.vue'));
       assert.equal(vueFile[0], './typescript');
       assert.equal(vueFile[1], 'styles.scss');
       assert.equal(vueFile.length, 2);
     });
 
     it('grabs dependencies from javascript/sass files', () => {
-      const vueFile = precinct.paperwork(path.join(__dirname, 'fixtures/js.vue'));
+      const vueFile = precinct.paperwork(fixturePath('js.vue'));
       assert.equal(vueFile[0], './typescript');
       assert.equal(vueFile[1], 'styles.scss');
       assert.equal(vueFile.length, 2);
@@ -370,7 +374,7 @@ describe('node-precinct', () => {
       });
 
       it('passes walker options through paperwork', () => {
-        const fixture = path.join(__dirname, 'fixtures/es6ImportInsideBlock.js');
+        const fixture = fixturePath('es6ImportInsideBlock.js');
         const withoutOption = precinct.paperwork(fixture);
         assert.equal(withoutOption.length, 0);
 
@@ -387,7 +391,7 @@ describe('node-precinct', () => {
 
   describe('paperwork', () => {
     it('grabs dependencies of jsx files', () => {
-      const fixture = path.join(__dirname, '/fixtures/module.jsx');
+      const fixture = fixturePath('module.jsx');
       const result = precinct.paperwork(fixture);
       const expected = ['./es6NoImport'];
       assert.deepEqual(result, expected);
@@ -411,7 +415,7 @@ describe('node-precinct', () => {
       const fixtures = ['es6.js', 'styles.scss', 'typescript.ts', 'styles.css'];
 
       for (const fixture of fixtures) {
-        const result = precinct.paperwork(path.join(__dirname, 'fixtures', fixture));
+        const result = precinct.paperwork(fixturePath(fixture));
         assert.notEqual(result.length, 0);
       }
     });
@@ -424,26 +428,26 @@ describe('node-precinct', () => {
     });
 
     it('filters out core modules if options.includeCore is false', () => {
-      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const fixture = fixturePath('coreModules.js');
       const result = precinct.paperwork(fixture, { includeCore: false });
       assert.equal(result.length, 0);
     });
 
     it('does not filter out core modules by default', () => {
-      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const fixture = fixturePath('coreModules.js');
       const result = precinct.paperwork(fixture);
       assert.notEqual(result.length, 0);
     });
 
     it('handles cjs files as commonjs', () => {
-      const fixture = path.join(__dirname, '/fixtures/commonjs.cjs');
+      const fixture = fixturePath('commonjs.cjs');
       const result = precinct.paperwork(fixture);
       assert.equal(result.includes('./a'), true);
       assert.equal(result.includes('./b'), true);
     });
 
     it('passes detective configuration to the underlying detective', () => {
-      const fixture = path.join(__dirname, '/fixtures/amdLazy.js');
+      const fixture = fixturePath('amdLazy.js');
       const withLazy = precinct.paperwork(fixture);
       const withoutLazy = precinct.paperwork(fixture, {
         amd: {
@@ -455,7 +459,7 @@ describe('node-precinct', () => {
     });
 
     it('does not filter out core modules by default when given detective configuration', () => {
-      const fixture = path.join(__dirname, '/fixtures/coreModules.js');
+      const fixture = fixturePath('coreModules.js');
       const result = precinct.paperwork(fixture, {
         amd: {
           skipLazyLoaded: true
