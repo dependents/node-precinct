@@ -7,9 +7,9 @@
   "scripts": {
     "lint": "xo",
     "fix": "xo --fix",
-    "mocha": "mocha",
-    "test": "npm run lint && npm run mocha",
-    "test:ci": "c8 npm run mocha"
+    "uvu": "uvu test -i fixtures",
+    "test": "npm run lint && npm run uvu",
+    "test:ci": "c8 npm run uvu"
   },
   "bin": {
     "precinct": "bin/cli.js"
@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "c8": "^10.1.3",
-    "mocha": "^11.7.5",
+    "uvu": "^0.5.6",
     "xo": "^0.60.0"
   },
   "xo": {
