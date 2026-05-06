@@ -5,10 +5,13 @@
   "main": "index.js",
   "types": "index.d.ts",
   "scripts": {
+    "generate:types": "tsc --allowJs --declaration --emitDeclarationOnly --declarationDir . index.js",
+    "check:types": "npm run generate:types && git diff --exit-code index.d.ts",
+    "prepublishOnly": "npm run check:types",
     "lint": "xo",
     "fix": "xo --fix",
     "uvu": "uvu test \".test.js\" -i fixtures",
-    "test": "npm run lint && npm run uvu",
+    "test": "npm run lint && npm run check:types && npm run uvu",
     "test:ci": "c8 npm run uvu"
   },
   "bin": {
@@ -68,6 +71,7 @@
   "xo": {
     "space": true,
     "ignores": [
+      "index.d.ts",
       "test/fixtures/*"
     ],
     "rules": {
