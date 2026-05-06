@@ -24,8 +24,8 @@ const debug = debuglog('precinct');
  *
  * @param {String|Object} content - File's content or AST
  * @param {Object} [options]
- * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-js detective
- * @param {Object} [options.walker] - Options to pass to the underlying source walker (node-source-walk)
+ * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-JS detective
+ * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
  * @return {String[]}
  */
 function precinct(content, options = {}) {
@@ -85,6 +85,7 @@ function precinct(content, options = {}) {
  * @param {Object} [options]
  * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
  * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
+ * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
  * @return {String[]}
  */
 precinct.paperwork = (filename, options = {}) => {
