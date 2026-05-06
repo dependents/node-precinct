@@ -92,20 +92,20 @@ precinct.paperwork = (filename, options = {}) => {
 
   const fileSystem = options.fileSystem || fs;
   const content = fileSystem.readFileSync(filename, 'utf8');
-  const ext = path.extname(filename);
+  const extension = path.extname(filename);
   let type;
 
-  if (ext === '.styl') {
+  if (extension === '.styl') {
     debug('paperwork: converting .styl into the stylus type');
     type = 'stylus';
-  } else if (ext === '.cjs') {
+  } else if (extension === '.cjs') {
     debug('paperwork: converting .cjs into the commonjs type');
     type = 'commonjs';
   // We need to sniff the JS module to find its type, not by extension.
   // Other possible types pass through normally
-  } else if (!['.js', '.jsx'].includes(ext)) {
+  } else if (!['.js', '.jsx'].includes(extension)) {
     debug('paperwork: stripping the dot from the extension to serve as the type');
-    type = ext.replace('.', '');
+    type = extension.replace('.', '');
   }
 
   if (type) {
