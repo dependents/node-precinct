@@ -1,6 +1,6 @@
 'use strict';
 
-const assert = require('assert').strict;
+const assert = require('node:assert').strict;
 const { suite } = require('uvu');
 const precinct = require('../index.js');
 const { fixturePath } = require('./helpers.js');

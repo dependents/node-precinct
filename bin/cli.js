@@ -2,7 +2,7 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('node:fs');
 const { program } = require('commander');
 const precinct = require('../index.js');
 const { name, description, version } = require('../package.json');

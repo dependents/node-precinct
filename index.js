@@ -1,9 +1,9 @@
 'use strict';
 
-const fs = require('fs');
-const { builtinModules } = require('module');
-const path = require('path');
-const { debuglog } = require('util');
+const fs = require('node:fs');
+const { builtinModules } = require('node:module');
+const path = require('node:path');
+const { debuglog } = require('node:util');
 const getModuleType = require('module-definition');
 const Walker = require('node-source-walk');
 const detectiveAmd = require('detective-amd');
@@ -43,7 +43,7 @@ function precinct(content, options = {}) {
       ast = walker.parse(content);
       debug('parsed the file content into an ast');
       precinct.ast = ast;
-    } catch (error) {
+    } catch(error) {
       // In case a previous call had it populated
       precinct.ast = null;
       debug('could not parse content: %s', error.message);
