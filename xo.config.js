@@ -1,37 +1,55 @@
 'use strict';
 
-module.exports = {
-  space: true,
-  ignores: [
-    'index.d.ts',
-    'test/fixtures/*'
-  ],
-  rules: {
-    'arrow-body-style': 'off',
-    'capitalized-comments': 'off',
-    'comma-dangle': [
-      'error',
-      'never'
-    ],
-    curly: [
-      'error',
-      'multi-line'
-    ],
-    'operator-linebreak': [
-      'error',
-      'after'
-    ],
-    'object-curly-spacing': [
-      'error',
-      'always'
-    ],
-    'space-before-function-paren': [
-      'error',
-      'never'
-    ],
-    'unicorn/prefer-module': 'off',
-    'unicorn/prefer-node-protocol': 'off',
-    'unicorn/prefer-top-level-await': 'off',
-    'unicorn/prevent-abbreviations': 'off'
+module.exports = [
+  {
+    ignores: [
+      'index.d.ts',
+      'test/fixtures/**'
+    ]
+  },
+  {
+    space: 2,
+    rules: {
+      '@stylistic/comma-dangle': [
+        'error',
+        'never'
+      ],
+      '@stylistic/curly-newline': [
+        'error',
+        {
+          consistent: true
+        }
+      ],
+      '@stylistic/object-curly-spacing': [
+        'error',
+        'always'
+      ],
+      '@stylistic/operator-linebreak': [
+        'error',
+        'after'
+      ],
+      '@stylistic/spaced-comment': 'off',
+      '@stylistic/space-before-function-paren': [
+        'error',
+        'never'
+      ],
+      'arrow-body-style': 'off',
+      camelcase: [
+        'error',
+        {
+          properties: 'never'
+        }
+      ],
+      'capitalized-comments': 'off',
+      curly: [
+        'error',
+        'multi-line'
+      ],
+      'prefer-template': 'error',
+      'unicorn/no-anonymous-default-export': 'off',
+      'unicorn/prefer-module': 'off',
+      'unicorn/prefer-top-level-await': 'off',
+      'unicorn/prevent-abbreviations': 'off'
+    }
   }
-};
+];

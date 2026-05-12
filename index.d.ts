@@ -8,9 +8,9 @@ export = precinct;
  * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
  * @return {String[]}
  */
-declare function precinct(content: string | any, options?: {
-    type?: string;
-    walker?: Record<string, any>;
+declare function precinct(content: string | Object, options?: {
+    type?: string | undefined;
+    walker?: Record<string, any> | undefined;
 }): string[];
 declare namespace precinct {
     /**
@@ -24,8 +24,8 @@ declare namespace precinct {
      * @return {String[]}
      */
     function paperwork(filename: string, options?: {
-        includeCore?: boolean;
-        fileSystem?: any;
-        walker?: Record<string, any>;
+        includeCore?: boolean | undefined;
+        fileSystem?: Object | undefined;
+        walker?: Record<string, any> | undefined;
     }): string[];
 }
