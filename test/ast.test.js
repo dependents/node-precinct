@@ -1,10 +1,8 @@
-'use strict';
-
-const assert = require('node:assert').strict;
-const { suite } = require('uvu');
-const precinct = require('../index.js');
-const ast = require('./fixtures/exampleAST.js');
-const { readFixture } = require('./helpers.js');
+import { strict as assert } from 'node:assert';
+import { suite } from 'uvu';
+import precinct from '../index.js';
+import ast from './fixtures/exampleAST.js';
+import { readFixture } from './helpers.js';
 
 const test = suite('AST');
 

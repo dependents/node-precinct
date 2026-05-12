@@ -1,21 +1,19 @@
-'use strict';
-
-const fs = require('node:fs');
-const { builtinModules } = require('node:module');
-const path = require('node:path');
-const { debuglog } = require('node:util');
-const getModuleType = require('module-definition');
-const Walker = require('node-source-walk');
-const detectiveAmd = require('detective-amd');
-const detectiveCjs = require('detective-cjs');
-const detectiveEs6 = require('detective-es6');
-const detectiveLess = require('@dependents/detective-less');
-const detectivePostcss = require('detective-postcss');
-const detectiveSass = require('detective-sass');
-const detectiveScss = require('detective-scss');
-const detectiveStylus = require('detective-stylus');
-const detectiveTypeScript = require('detective-typescript');
-const detectiveVue = require('detective-vue2');
+import fs from 'node:fs';
+import { builtinModules } from 'node:module';
+import path from 'node:path';
+import { debuglog } from 'node:util';
+import getModuleType from 'module-definition';
+import Walker from 'node-source-walk';
+import detectiveAmd from 'detective-amd';
+import detectiveCjs from 'detective-cjs';
+import detectiveEs6 from 'detective-es6';
+import detectiveLess from '@dependents/detective-less';
+import detectivePostcss from 'detective-postcss';
+import detectiveSass from 'detective-sass';
+import detectiveScss from 'detective-scss';
+import detectiveStylus from 'detective-stylus';
+import detectiveTypeScript from 'detective-typescript';
+import detectiveVue from 'detective-vue2';
 
 const debug = debuglog('precinct');
 
@@ -200,4 +198,4 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
   ];
 }
 
-module.exports = precinct;
+export default precinct;

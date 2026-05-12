@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-'use strict';
+import fs from 'node:fs';
+import { program } from 'commander';
+import precinct from '../index.js';
+import pkg from '../package.json' with { type: 'json' };
 
-const fs = require('node:fs');
-const { program } = require('commander');
-const precinct = require('../index.js');
-const { name, description, version } = require('../package.json');
+const { name, description, version } = pkg;
 
 program
   .name(name)

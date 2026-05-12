@@ -1,17 +1,13 @@
-'use strict';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const { readFile } = require('node:fs/promises');
-const path = require('node:path');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-function fixturePath(filename) {
+export function fixturePath(filename) {
   return path.join(__dirname, 'fixtures', filename);
 }
 
-async function readFixture(filename) {
+export async function readFixture(filename) {
   return readFile(fixturePath(filename), 'utf8');
 }
-
-module.exports = {
-  fixturePath,
-  readFixture
-};

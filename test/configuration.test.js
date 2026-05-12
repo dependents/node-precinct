@@ -1,9 +1,8 @@
-'use strict';
-
-const assert = require('node:assert').strict;
-const { suite } = require('uvu');
-const precinct = require('../index.js');
-const { fixturePath, readFixture } = require('./helpers.js');
+import { strict as assert } from 'node:assert';
+import parser from '@babel/parser';
+import { suite } from 'uvu';
+import precinct from '../index.js';
+import { fixturePath, readFixture } from './helpers.js';
 
 const test = suite('configuration');
 
@@ -43,7 +42,7 @@ test('walker options: finds imports inside blocks when allowImportExportEverywhe
 test('walker options: accepts a custom parser via walker options', async() => {
   const fixture = await readFixture('commonjs.js');
 
-  const prebuiltAst = require('@babel/parser').parse(fixture, {
+  const prebuiltAst = parser.parse(fixture, {
     sourceType: 'module',
     allowHashBang: true
   });

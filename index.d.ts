@@ -1,4 +1,4 @@
-export = precinct;
+export default precinct;
 /**
  * Finds the list of dependencies for the given file
  *

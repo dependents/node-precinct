@@ -25,8 +25,12 @@ npm install precinct
 ## Quick start
 
 ```js
+// ESM
+import fs from 'node:fs';
+import precinct from 'precinct';
+// CommonJS
 const fs = require('node:fs');
-const precinct = require('precinct');
+const { default: precinct } = require('precinct');
 
 const content = fs.readFileSync('myFile.js', 'utf8');
 
@@ -88,6 +92,9 @@ Reads the file at `filename` and returns an array of its dependencies. The modul
 #### Example
 
 ```js
+// ESM
+import { paperwork } from 'precinct';
+// CommonJS
 const { paperwork } = require('precinct');
 
 const deps = paperwork('myFile.js');
