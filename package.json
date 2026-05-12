@@ -37,7 +37,7 @@
     "url": "https://github.com/dependents/node-precinct/issues"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "files": [
     "bin/cli.js",
@@ -46,25 +46,26 @@
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
-    "@dependents/detective-less": "^5.0.3",
-    "commander": "^12.1.0",
-    "detective-amd": "^6.1.0",
-    "detective-cjs": "^6.1.1",
-    "detective-es6": "^5.0.2",
-    "detective-postcss": "^8.0.3",
-    "detective-sass": "^6.0.2",
-    "detective-scss": "^5.0.2",
-    "detective-stylus": "^5.0.1",
-    "detective-typescript": "^14.1.2",
-    "detective-vue2": "^2.3.0",
-    "module-definition": "^6.0.2",
-    "node-source-walk": "^7.0.2",
-    "postcss": "^8.5.14",
-    "typescript": "^5.9.3"
+    "@dependents/detective-less": "^6.0.0",
+    "commander": "^14.0.3",
+    "detective-amd": "^7.0.0",
+    "detective-cjs": "^7.0.0",
+    "detective-es6": "^6.0.0",
+    "detective-postcss": "^9.0.0",
+    "detective-sass": "^7.0.0",
+    "detective-scss": "^6.0.0",
+    "detective-stylus": "^6.0.0",
+    "detective-typescript": "^15.0.0",
+    "detective-vue2": "^3.0.0",
+    "module-definition": "^7.0.0",
+    "node-source-walk": "^8.0.0",
+    "postcss": "^8.5.15",
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "c8": "^10.1.3",
+    "@babel/parser": "^7.29.3",
+    "c8": "^11.0.0",
     "uvu": "^0.5.6",
-    "xo": "^0.60.0"
+    "xo": "^2.0.2"
   }
 }

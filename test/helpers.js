@@ -1,7 +1,7 @@
 'use strict';
 
-const { readFile } = require('fs/promises');
-const path = require('path');
+const { readFile } = require('node:fs/promises');
+const path = require('node:path');
 
 function fixturePath(filename) {
   return path.join(__dirname, 'fixtures', filename);
