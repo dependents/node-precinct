@@ -2,8 +2,13 @@
   "name": "precinct",
   "version": "12.3.2",
   "description": "Unleash the detectives",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
   "scripts": {
     "generate:types": "tsc --allowJs --declaration --emitDeclarationOnly --declarationDir . index.js",
     "check:types": "npm run generate:types && git diff HEAD --exit-code index.d.ts",
@@ -37,7 +42,7 @@
     "url": "https://github.com/dependents/node-precinct/issues"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=20.19.0 || >=22.12.0"
   },
   "files": [
     "bin/cli.js",
