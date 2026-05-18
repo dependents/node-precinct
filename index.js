@@ -18,13 +18,25 @@ import detectiveVue from 'detective-vue2';
 const debug = debuglog('precinct');
 
 /**
+ * @typedef {Partial<Record<string, Record<string, any>>> & {
+ *   type?: string,
+ *   walker?: Record<string, any>
+ * }} PrecinctOptions
+ */
+
+/**
+ * @typedef {PrecinctOptions & {
+ *   includeCore?: boolean,
+ *   fileSystem?: { readFileSync: (path: string, encoding: 'utf8') => string }
+ * }} PaperworkOptions
+ */
+
+/**
  * Finds the list of dependencies for the given file
  *
- * @param {String|Object} content - File's content or AST
- * @param {Object} [options]
- * @param {String} [options.type] - The type of content being passed in. Useful if you want to use a non-JS detective
- * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
- * @return {String[]}
+ * @param {string | Record<string, any>} content - File's content or AST
+ * @param {PrecinctOptions} [options]
+ * @return {string[]}
  */
 function precinct(content, options = {}) {
   debug('options given: %o', options);
@@ -79,12 +91,9 @@ function precinct(content, options = {}) {
 /**
  * Returns the dependencies for the given file path
  *
- * @param {String} filename
- * @param {Object} [options]
- * @param {Boolean} [options.includeCore=true] - Whether or not to include core modules in the dependency list
- * @param {Object} [options.fileSystem=undefined] - An alternative fs implementation to use for reading the file path.
- * @param {Record<string, any>} [options.walker] - Options to pass to node-source-walk
- * @return {String[]}
+ * @param {string} filename
+ * @param {PaperworkOptions} [options]
+ * @return {string[]}
  */
 precinct.paperwork = (filename, options = {}) => {
   options = { includeCore: true, ...options };
@@ -135,6 +144,10 @@ precinct.paperwork = (filename, options = {}) => {
   return dependencies;
 };
 
+/**
+ * @param {string} type
+ * @param {PrecinctOptions} options
+ */
 function getDetective(type, options) {
   const mixedMode = options.es6?.mixedImports;
 
@@ -191,6 +204,10 @@ function getDetective(type, options) {
   }
 }
 
+/**
+ * @param {Record<string, any>} ast
+ * @param {Record<string, any>} [detectiveOptions]
+ */
 function detectiveEs6Cjs(ast, detectiveOptions) {
   return [
     ...detectiveEs6(ast, detectiveOptions),
