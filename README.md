@@ -2,113 +2,132 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/dependents/node-precinct/ci.yml?branch=main&label=CI&logo=github)](https://github.com/dependents/node-precinct/actions/workflows/ci.yml?query=branch%3Amain)
 [![npm version](https://img.shields.io/npm/v/precinct?logo=npm&logoColor=fff)](https://www.npmjs.com/package/precinct)
-[![npm downloads](http://img.shields.io/npm/dm/precinct)](https://www.npmjs.com/package/precinct)
+[![npm downloads](https://img.shields.io/npm/dm/precinct)](https://www.npmjs.com/package/precinct)
 
 > Unleash the detectives
-
-```sh
-npm install precinct
-```
 
 Uses the appropriate detective to find the dependencies of a file or its AST.
 
 Supports:
 
-* JavaScript modules: AMD, CommonJS, and ES6
-* TypeScript
-* CSS Preprocessors: Sass, Scss, Stylus, and Less
-* CSS (PostCSS)
-* Vue
+- JavaScript modules: AMD, CommonJS, ES6
+- TypeScript
+- CSS preprocessors: Sass, Scss, Less, Stylus
+- CSS (PostCSS)
+- Vue
 
-## Usage
+## Install
+
+```sh
+npm install precinct
+```
+
+## Quick start
 
 ```js
-const fs = require('fs');
+const fs = require('node:fs');
 const precinct = require('precinct');
 
 const content = fs.readFileSync('myFile.js', 'utf8');
 
-// Pass in a file's content or an AST
+// From source content or an AST
 const deps = precinct(content);
+
+// Or directly from a file path
+const deps2 = precinct.paperwork('styles.scss');
 ```
 
-You may pass options (to individual detectives) based on the module type via an optional second object argument `detective(content, options)`, for example:
+## API
 
-Example call:
+### `precinct(content, options?)`
+
+Returns an array of dependency strings discovered in `content`. `content` may be a source string or an already-parsed AST.
+
+| Option | Type | Default | Notes |
+|---|---|---|---|
+| `type` | `string` | inferred from source | Forces a specific detective. See [Supported types](#supported-types). |
+| `walker` | `object` | - | Passed through to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance - e.g. `{ allowImportExportEverywhere: true }`, or `{ parser: myCustomParser }` to swap in a parser with a `.parse(src, opts)` method. |
+| `amd.skipLazyLoaded` | `boolean` | `false` | Omit lazy-loaded (inner-`require`) dependencies in AMD files. |
+| `es6.mixedImports` | `boolean` | `false` | Return both ES6 and CommonJS imports from a file that mixes the two. Works for any format that contains an ES6 import. |
+| `css.url` | `boolean` | `false` | Include `url()` references (images, fonts, etc.) in CSS output. |
+| `[type]` | `object` | - | Any other key matching a module type is forwarded to that detective as its options bag. |
+
+Side channel: `precinct.ast` holds the last AST produced (or `null` when parsing failed).
+
+#### Example
 
 ```js
 precinct(content, {
+  type: 'amd',
   amd: {
     skipLazyLoaded: true
-  },
-  type: 'amd'
+  }
 });
+
+precinct(content, {
+  walker: {
+    allowImportExportEverywhere: true
+  }
+});
+
+// Non-JS content
+precinct(scssSource, { type: 'scss' });
+precinct(stylusSource, { type: 'stylus' });
 ```
 
-* The supported module type prefixes are: `amd`, `commonjs`, `css`, `es6`, `less`, `sass`, `scss`, `stylus`, `ts`, `tsx`, `vue`.
+### `precinct.paperwork(filename, options?)`
 
-Current options:
+Reads the file at `filename` and returns an array of its dependencies. The module type is inferred from the file extension (see below). Accepts every option `precinct()` does, plus the two below.
 
-* `amd.skipLazyLoaded`: tells the AMD detective to omit lazy-loaded dependencies (i.e., inner requires).
-* `es6.mixedImports`: allows for all dependencies to be fetched from a file that contains both CJS and ES6 imports.
-  * Note: This will work for any file format that contains an ES6 import.
-* `css.url`: tells the CSS detective to include `url()` references to images, fonts, etc.
-* `walker`: options passed directly to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance.
+| Option | Type | Default | Notes |
+|---|---|---|---|
+| `includeCore` | `boolean` | `true` | Set to `false` to strip Node.js core modules (`fs`, `path`, `node:fs`, ...) from the result. |
+| `fileSystem` | `{ readFileSync(path, encoding): string }` | `node:fs` | An alternative `fs` implementation used to read `filename`. Only `readFileSync(path, 'utf8')` is required. |
+| `walker`, `amd`, `es6`, `css`, `[type]` | - | - | Same as `precinct()` - all detective options are forwarded. |
 
-  Example:
-
-  ```js
-  precinct(content, {
-    walker: {
-      allowImportExportEverywhere: true
-    }
-  });
-
-  // Or supply a fully custom parser:
-  precinct(content, {
-    walker: {
-      parser: myCustomParser // any object with a .parse(src, opts) method
-    }
-  });
-  ```
-
-Finding non-JavaScript (ex: Sass and Stylus) dependencies:
-
-```js
-const fs = require('fs');
-const content = fs.readFileSync('styles.scss', 'utf8');
-
-const sassDeps = precinct(content, { type: 'sass' });
-const stylusDeps = precinct(content, { type: 'stylus' });
-```
-
-Or, if you just want to pass in a filepath and get the dependencies:
+#### Example
 
 ```js
 const { paperwork } = require('precinct');
 
 const deps = paperwork('myFile.js');
 const deps2 = paperwork('styles.scss');
+const deps3 = paperwork('app.ts', { includeCore: false });
 ```
 
-### `precinct.paperwork(filename, options)`
+## Supported types
 
-Supported options:
+Accepted values for the `type` option:
 
-* `includeCore`: (default: `true`) set to `false` to exclude core Node.js dependencies from the list of dependencies.
-* `fileSystem`: (default: `undefined`) set to an alternative `fs` implementation that will be used to read the file path.
-* `walker`: (default: `undefined`) options forwarded to the underlying [node-source-walk](https://github.com/dependents/node-source-walk) instance - same as the top-level `walker` option.
-* You may also pass detective-specific configuration like you would to `precinct(content, options)`.
+| Value | Detective |
+|---|---|
+| `amd` | [detective-amd](https://github.com/dependents/node-detective-amd) |
+| `cjs`, `commonjs` | [detective-cjs](https://github.com/dependents/node-detective-cjs) |
+| `css` | [detective-postcss](https://github.com/dependents/node-detective-postcss) |
+| `es6`, `esm`, `mjs` | [detective-es6](https://github.com/dependents/node-detective-es6) |
+| `less` | [@dependents/detective-less](https://github.com/dependents/node-detective-less) |
+| `sass` | [detective-sass](https://github.com/dependents/node-detective-sass) |
+| `scss` | [detective-scss](https://github.com/dependents/node-detective-scss) |
+| `stylus` | [detective-stylus](https://github.com/dependents/node-detective-stylus) |
+| `ts` | [detective-typescript](https://github.com/dependents/detective-typescript) |
+| `tsx` | [detective-typescript](https://github.com/dependents/detective-typescript) (tsx variant) |
+| `vue` | [detective-vue2](https://github.com/dependents/detective-vue2) |
 
-### CLI
+`paperwork()` infers the type from the filename extension; `.styl` maps to `stylus` and `.cjs` maps to `commonjs`. Any other extension becomes the type with the leading dot stripped. `.js` and `.jsx` are sniffed at the source level rather than by extension.
 
-Assumes a global install precinct with `npm install -g precinct`.
+## CLI
 
 ```sh
-precinct [options] path/to/file
+npm install -g precinct
+precinct [options] <filename>
 ```
 
-Run `precinct --help` to see all options.
+| Flag | Description |
+|---|---|
+| `-t, --type <type>` | Force a module type (see [Supported types](#supported-types)). |
+| `--es6-mixed-imports` | Collect both ES6 and CommonJS imports in the same file. |
+| `-V, --version` | Print version. |
+| `-h, --help` | Print help. |
 
 ## License
 
