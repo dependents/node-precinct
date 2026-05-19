@@ -1,6 +1,6 @@
 {
   "name": "precinct",
-  "version": "12.3.2",
+  "version": "13.0.0",
   "description": "Unleash the detectives",
   "type": "module",
   "exports": {
