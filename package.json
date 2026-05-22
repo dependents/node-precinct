@@ -14,9 +14,9 @@
     "check:types": "npm run generate:types && git diff HEAD --exit-code index.d.ts",
     "lint": "xo",
     "fix": "xo --fix",
-    "uvu": "uvu test \".test.js\" -i fixtures",
-    "test": "npm run lint && npm run check:types && npm run uvu",
-    "test:ci": "c8 npm run uvu"
+    "vitest": "vitest",
+    "test": "npm run lint && npm run check:types && vitest run",
+    "test:ci": "vitest run --coverage"
   },
   "bin": {
     "precinct": "bin/cli.js"
@@ -69,8 +69,8 @@
   },
   "devDependencies": {
     "@babel/parser": "^7.29.3",
-    "c8": "^11.0.0",
-    "uvu": "^0.5.6",
+    "@vitest/coverage-v8": "^4.1.7",
+    "vitest": "^4.1.7",
     "xo": "^2.0.2"
   }
 }
