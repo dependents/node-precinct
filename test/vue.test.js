@@ -1,22 +1,19 @@
-import { strict as assert } from 'node:assert';
-import { suite } from 'uvu';
+import { describe, it, expect } from 'vitest';
 import precinct from '../index.js';
 import { fixturePath } from './helpers.js';
 
-const test = suite('Vue');
+describe('Vue', () => {
+  it('grabs dependencies from typescript/scss files', () => {
+    const result = precinct.paperwork(fixturePath('ts.vue'));
+    expect(result[0]).toBe('./typescript');
+    expect(result[1]).toBe('styles.scss');
+    expect(result.length).toBe(2);
+  });
 
-test('grabs dependencies from typescript/scss files', () => {
-  const result = precinct.paperwork(fixturePath('ts.vue'));
-  assert.equal(result[0], './typescript');
-  assert.equal(result[1], 'styles.scss');
-  assert.equal(result.length, 2);
+  it('grabs dependencies from javascript/sass files', () => {
+    const result = precinct.paperwork(fixturePath('js.vue'));
+    expect(result[0]).toBe('./typescript');
+    expect(result[1]).toBe('styles.scss');
+    expect(result.length).toBe(2);
+  });
 });
-
-test('grabs dependencies from javascript/sass files', () => {
-  const result = precinct.paperwork(fixturePath('js.vue'));
-  assert.equal(result[0], './typescript');
-  assert.equal(result[1], 'styles.scss');
-  assert.equal(result.length, 2);
-});
-
-test.run();

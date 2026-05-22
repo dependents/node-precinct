@@ -1,16 +1,13 @@
-import { strict as assert } from 'node:assert';
-import { suite } from 'uvu';
+import { describe, it, expect } from 'vitest';
 import precinct from '../index.js';
 import { readFixture } from './helpers.js';
 
-const test = suite('AMD');
-
-test('grabs dependencies', async() => {
-  const fixture = await readFixture('amd.js');
-  const result = precinct(fixture);
-  assert.equal(result.includes('./a'), true);
-  assert.equal(result.includes('./b'), true);
-  assert.equal(result.length, 2);
+describe('AMD', () => {
+  it('grabs dependencies', async() => {
+    const fixture = await readFixture('amd.js');
+    const result = precinct(fixture);
+    expect(result.includes('./a')).toBe(true);
+    expect(result.includes('./b')).toBe(true);
+    expect(result.length).toBe(2);
+  });
 });
-
-test.run();
