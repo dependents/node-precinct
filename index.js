@@ -18,7 +18,7 @@ import detectiveVue from 'detective-vue2';
 const debug = debuglog('precinct');
 
 /**
- * @typedef {Partial<Record<string, Record<string, any>>> & {
+ * @typedef {Record<string, unknown> & {
  *   type?: string,
  *   walker?: Record<string, any>
  * }} PrecinctOptions

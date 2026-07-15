@@ -1,5 +1,5 @@
 export default precinct;
-export type PrecinctOptions = Partial<Record<string, Record<string, any>>> & {
+export type PrecinctOptions = Record<string, unknown> & {
     type?: string;
     walker?: Record<string, any>;
 };
@@ -10,7 +10,7 @@ export type PaperworkOptions = PrecinctOptions & {
     };
 };
 /**
- * @typedef {Partial<Record<string, Record<string, any>>> & {
+ * @typedef {Record<string, unknown> & {
  *   type?: string,
  *   walker?: Record<string, any>
  * }} PrecinctOptions
