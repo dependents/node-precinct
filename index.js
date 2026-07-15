@@ -89,6 +89,13 @@ function precinct(content, options = {}) {
 }
 
 /**
+ * The last AST produced by precinct, or null when parsing failed
+ *
+ * @type {Record<string, any> | null}
+ */
+precinct.ast = null;
+
+/**
  * Returns the dependencies for the given file path
  *
  * @param {string} filename
