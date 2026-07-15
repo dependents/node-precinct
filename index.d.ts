@@ -30,6 +30,7 @@ export type PaperworkOptions = PrecinctOptions & {
  */
 declare function precinct(content: string | Record<string, any>, options?: PrecinctOptions): string[];
 declare namespace precinct {
+    let ast: Record<string, any> | null;
     /**
      * Returns the dependencies for the given file path
      *
