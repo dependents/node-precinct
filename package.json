@@ -51,26 +51,26 @@
   ],
   "homepage": "https://github.com/dependents/node-precinct",
   "dependencies": {
-    "@dependents/detective-less": "^6.0.0",
+    "@dependents/detective-less": "^6.0.1",
     "commander": "^14.0.3",
     "detective-amd": "^7.0.0",
     "detective-cjs": "^7.0.0",
     "detective-es6": "^6.0.0",
-    "detective-postcss": "^9.0.0",
-    "detective-sass": "^7.0.0",
-    "detective-scss": "^6.0.0",
+    "detective-postcss": "^9.0.1",
+    "detective-sass": "^7.0.1",
+    "detective-scss": "^6.0.1",
     "detective-stylus": "^6.0.0",
-    "detective-typescript": "^15.0.0",
-    "detective-vue2": "^3.0.0",
+    "detective-typescript": "^15.0.1",
+    "detective-vue2": "^3.0.1",
     "module-definition": "^7.0.0",
     "node-source-walk": "^8.0.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.19",
     "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@babel/parser": "^7.29.3",
-    "@vitest/coverage-v8": "^4.1.7",
-    "vitest": "^4.1.7",
+    "@babel/parser": "^7.29.7",
+    "@vitest/coverage-v8": "^4.1.10",
+    "vitest": "^4.1.10",
     "xo": "^2.0.2"
   }
 }
