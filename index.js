@@ -102,7 +102,7 @@ precinct.ast = null;
  * @param {PaperworkOptions} [options]
  * @return {string[]}
  */
-precinct.paperwork = (filename, options = {}) => {
+function paperwork(filename, options = {}) {
   options = { includeCore: true, ...options };
 
   const fileSystem = options.fileSystem || fs;
@@ -149,7 +149,9 @@ precinct.paperwork = (filename, options = {}) => {
 
   debug('paperwork: got these results\n', dependencies);
   return dependencies;
-};
+}
+
+precinct.paperwork = paperwork;
 
 /**
  * @param {string} type
@@ -223,3 +225,4 @@ function detectiveEs6Cjs(ast, detectiveOptions) {
 }
 
 export default precinct;
+export { paperwork };

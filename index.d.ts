@@ -30,13 +30,14 @@ export type PaperworkOptions = PrecinctOptions & {
  */
 declare function precinct(content: string | Record<string, any>, options?: PrecinctOptions): string[];
 declare namespace precinct {
-    let ast: Record<string, any> | null;
-    /**
-     * Returns the dependencies for the given file path
-     *
-     * @param {string} filename
-     * @param {PaperworkOptions} [options]
-     * @return {string[]}
-     */
-    function paperwork(filename: string, options?: PaperworkOptions): string[];
+    export let ast: Record<string, any> | null;
+    export { paperwork };
 }
+/**
+ * Returns the dependencies for the given file path
+ *
+ * @param {string} filename
+ * @param {PaperworkOptions} [options]
+ * @return {string[]}
+ */
+export function paperwork(filename: string, options?: PaperworkOptions): string[];
