@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import { builtinModules } from 'node:module';
+import { builtinModules, createRequire } from 'node:module';
 import path from 'node:path';
 import { debuglog } from 'node:util';
 import getModuleType from 'module-definition';
@@ -12,10 +12,78 @@ import detectivePostcss from 'detective-postcss';
 import detectiveSass from 'detective-sass';
 import detectiveScss from 'detective-scss';
 import detectiveStylus from 'detective-stylus';
-import detectiveTypeScript from 'detective-typescript';
-import detectiveVue from 'detective-vue2';
+
+const require = createRequire(import.meta.url);
 
 const debug = debuglog('precinct');
+
+// The TypeScript and Vue detectives are loaded on demand: they pull in the TypeScript
+// compiler and the Vue SFC compiler, which the majority of consumers never need. Both
+// are required synchronously via require(ESM), supported on every Node version this
+// package supports, so the public API stays synchronous.
+let detectiveTypeScript;
+let detectiveVue;
+
+// Tagged so callers can tell an unusable peer dependency apart from a file that failed to parse
+const typeScriptUnavailableCode = 'ERR_TYPESCRIPT_UNAVAILABLE';
+
+/**
+ * Loads a detective that needs the optional `typescript` peer dependency. The load is
+ * attempted rather than guarded by a version check, so whatever the peer dependency
+ * happens to be, the failure it produces deep inside the detective's own dependencies
+ * is rewritten into something the consumer can act on.
+ *
+ * @param {string} name - Detective package to load
+ * @return {any}
+ */
+function loadTypeScriptDetective(name) {
+  debug('loading %s on demand', name);
+
+  try {
+    return require(name).default;
+  } catch(error) {
+    debug('could not load %s: %s', name, error.message);
+    const failure = new Error(explainLoadFailure(name, error), { cause: error });
+    throw Object.assign(failure, { code: typeScriptUnavailableCode });
+  }
+}
+
+/**
+ * @param {string} name - Detective package that failed to load
+ * @param {Error} error
+ * @return {string}
+ */
+function explainLoadFailure(name, error) {
+  const version = installedTypeScriptVersion();
+
+  if (!version) {
+    return `${name} requires the "typescript" peer dependency, which is not installed. ` +
+      'Run `npm install typescript` to analyze TypeScript and Vue files.';
+  }
+
+  return `${name} could not be loaded with typescript@${version} installed: ${error.message}`;
+}
+
+/**
+ * @return {string | undefined}
+ */
+function installedTypeScriptVersion() {
+  try {
+    return require('typescript').version;
+  } catch {
+    return undefined;
+  }
+}
+
+function loadDetectiveTypeScript() {
+  detectiveTypeScript ??= loadTypeScriptDetective('detective-typescript');
+  return detectiveTypeScript;
+}
+
+function loadDetectiveVue() {
+  detectiveVue ??= loadTypeScriptDetective('detective-vue2');
+  return detectiveVue;
+}
 
 /**
  * @typedef {Record<string, unknown> & {
@@ -197,15 +265,15 @@ function getDetective(type, options) {
     }
 
     case 'ts': {
-      return detectiveTypeScript;
+      return loadDetectiveTypeScript();
     }
 
     case 'tsx': {
-      return detectiveTypeScript.tsx;
+      return loadDetectiveTypeScript().tsx;
     }
 
     case 'vue': {
-      return detectiveVue;
+      return loadDetectiveVue();
     }
 
     default:

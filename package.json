@@ -64,8 +64,15 @@
     "detective-vue2": "^3.0.1",
     "module-definition": "^7.0.0",
     "node-source-walk": "^8.0.0",
-    "postcss": "^8.5.25",
-    "typescript": "^6.0.3"
+    "postcss": "^8.5.25"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.4 || ^6.0.2"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@babel/parser": "^7.29.8",
