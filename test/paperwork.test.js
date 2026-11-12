@@ -57,6 +57,30 @@ describe('paperwork', () => {
     expect(result).toContain('./b');
   });
 
+  it('handles mts files as typescript', () => {
+    const fixture = fixturePath('typescript.mts');
+    const result = precinct.paperwork(fixture);
+    expect(result).toStrictEqual(['./b.mts', './types.mts']);
+  });
+
+  it('passes typescript configuration for mts files', () => {
+    const fixture = fixturePath('typescript.mts');
+    const result = precinct.paperwork(fixture, { ts: { skipTypeImports: true } });
+    expect(result).toStrictEqual(['./b.mts']);
+  });
+
+  it('handles cts files as typescript with require calls', () => {
+    const fixture = fixturePath('typescript.cts');
+    const result = precinct.paperwork(fixture, { includeCore: false });
+    expect(result).toStrictEqual(['./b.cjs']);
+  });
+
+  it('lets the typescript configuration turn off require calls for cts files', () => {
+    const fixture = fixturePath('typescript.cts');
+    const result = precinct.paperwork(fixture, { ts: { mixedImports: false } });
+    expect(result).toStrictEqual(['node:fs']);
+  });
+
   it('passes detective configuration to the underlying detective', () => {
     const fixture = fixturePath('amdLazy.js');
     const withLazy = precinct.paperwork(fixture);

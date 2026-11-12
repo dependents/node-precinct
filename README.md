@@ -120,7 +120,7 @@ Accepted values for the `type` option:
 | `tsx` | [detective-typescript](https://github.com/dependents/detective-typescript) (tsx variant) |
 | `vue` | [detective-vue2](https://github.com/dependents/detective-vue2) |
 
-`paperwork()` infers the type from the filename extension; `.styl` maps to `stylus` and `.cjs` maps to `commonjs`. Any other extension becomes the type with the leading dot stripped. `.js` and `.jsx` are sniffed at the source level rather than by extension.
+`paperwork()` infers the type from the filename extension; `.styl` maps to `stylus`, `.cjs` maps to `commonjs`, and `.mts` and `.cts` map to `ts` (for `.cts`, `ts.mixedImports` defaults to `true` so `require()` calls are found). Any other extension becomes the type with the leading dot stripped. `.js` and `.jsx` are sniffed at the source level rather than by extension.
 
 ## CLI
 
