@@ -110,17 +110,44 @@ function paperwork(filename, options = {}) {
   const extension = path.extname(filename);
   let type;
 
-  if (extension === '.styl') {
-    debug('paperwork: converting .styl into the stylus type');
-    type = 'stylus';
-  } else if (extension === '.cjs') {
-    debug('paperwork: converting .cjs into the commonjs type');
-    type = 'commonjs';
-  // We need to sniff the JS module to find its type, not by extension.
-  // Other possible types pass through normally
-  } else if (!['.js', '.jsx'].includes(extension)) {
-    debug('paperwork: stripping the dot from the extension to serve as the type');
-    type = extension.replace('.', '');
+  switch (extension) {
+    case '.styl': {
+      debug('paperwork: converting .styl into the stylus type');
+      type = 'stylus';
+      break;
+    }
+
+    case '.cjs': {
+      debug('paperwork: converting .cjs into the commonjs type');
+      type = 'commonjs';
+      break;
+    }
+
+    case '.mts': {
+      debug('paperwork: converting .mts into the ts type');
+      type = 'ts';
+      break;
+    }
+
+    case '.cts': {
+      debug('paperwork: converting .cts into the ts type, with require() calls');
+      type = 'ts';
+      // .cts files are CommonJS, so find require() calls unless told otherwise
+      options = { ...options, ts: { mixedImports: true, ...options.ts } };
+      break;
+    }
+
+    // We need to sniff the JS module to find its type, not by extension.
+    case '.js':
+    case '.jsx': {
+      break;
+    }
+
+    // Other possible types pass through normally
+    default: {
+      debug('paperwork: stripping the dot from the extension to serve as the type');
+      type = extension.replace('.', '');
+    }
   }
 
   if (type) {
